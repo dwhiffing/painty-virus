@@ -17,12 +17,11 @@ export class Boot extends Scene {
 
   preload() {
     this.load.setPath('assets')
-    this.load.image('background', 'bg.png')
-    this.load.image('logo', 'logo.png')
+    this.load.bitmapFont('clarity', 'clarity.png', 'clarity.xml')
   }
 
   create() {
-    this.scene.start('Menu')
-    // this.scene.start('Game')
+    // this.scene.start('Menu')
+    this.scene.start('Game')
   }
 }
