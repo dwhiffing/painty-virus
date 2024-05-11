@@ -1,119 +1,82 @@
 import { Scene } from 'phaser'
-
-class Icon {
-  scene: Game
-  constructor(scene: Game, x: number, y: number, onClick: () => void) {
-    this.scene = scene
-
-    const w = 10
-    const h = 10
-
-    const icon = this.scene.add
-      .rectangle(x, y, w + 2, h + 2, 0x000000)
-      .setOrigin(0, 0)
-      .setInteractive({ draggable: true })
-
-    let lastTime = 0
-    icon.on('pointerdown', () => {
-      let clickDelay = this.scene.time.now - lastTime
-      lastTime = this.scene.time.now
-      if (clickDelay < 350) {
-        onClick()
-      }
-    })
-  }
-}
-
-let d = 0
-class OSWindow {
-  scene: Game
-  titleBarStroke: any
-  titleBar: any
-  innerStroke: any
-  inner: any
-  closeButton: any
-  constructor(scene: Game, x: number, y: number, w: number, h: number) {
-    this.scene = scene
-
-    this.titleBarStroke = this.scene.add
-      .rectangle(x, y, w + 2, h + 2, 0x000000)
-      .setOrigin(0, 0)
-      .setInteractive({ draggable: true })
-
-    this.titleBar = this.scene.add
-      .rectangle(x + 1, y + 1, w, h, 0x999999)
-      .setOrigin(0, 0)
-
-    this.innerStroke = this.scene.add
-      .rectangle(x, y + 10, w + 2, 102, 0x000000)
-      .setOrigin(0, 0)
-
-    this.inner = this.scene.add
-      .rectangle(x + 1, y + 11, w, 100, 0xffffff)
-      .setOrigin(0, 0)
-
-    this.closeButton = this.scene.add
-      .rectangle(x + w - 7, y + 2, 7, 7, 0x000000)
-      .setOrigin(0, 0)
-      .setInteractive()
-
-    this.titleBarStroke.on('drag', (_: any, x: number, y: number) => {
-      this.titleBarStroke.setPosition(x, y)
-      this.titleBar.setPosition(x + 1, y + 1)
-      this.innerStroke.setPosition(x, y + 10)
-      this.inner.setPosition(x + 1, y + 11)
-      this.closeButton.setPosition(x + w - 7, y + 2)
-
-      this.setDepth(++d)
-    })
-
-    this.closeButton.on('pointerup', () => {
-      this.titleBarStroke.destroy()
-      this.titleBar.destroy()
-      this.innerStroke.destroy()
-      this.inner.destroy()
-      this.closeButton.destroy()
-    })
-  }
-
-  setDepth(d: number) {
-    this.titleBarStroke.setDepth(d)
-    this.titleBar.setDepth(d)
-    this.innerStroke.setDepth(d)
-    this.inner.setDepth(d)
-    this.closeButton.setDepth(d)
-  }
-}
+import { Paint } from '../entities/Paint'
+import { Icon } from '../entities/Icon'
+import { Enemy } from '../entities/Enemy'
+import { Bullet } from '../entities/Bullet'
+import { Canvas } from '../entities/Canvas'
+import { x, y, w, h } from '../constants'
 
 export class Game extends Scene {
+  enemies: Phaser.GameObjects.Group
+  bullets: Phaser.GameObjects.Group
   constructor() {
     super('Game')
   }
 
   create() {
-    this.add.bitmapText(10, 10, 'clarity', 'Welcome', 8)
+    this.cameras.main.setRoundPixels(false)
+    this.add.bitmapText(260, 180, 'clarity', 'Welcome', 8)
 
-    const barHeight = 15
+    new Paint(this, x, y, w, h)
+    new Canvas(this, x, y, w, h)
+    new Icon(this, 5, 5, () => {})
 
-    const icon = new Icon(this, 10, 10, () => {
-      const _window = new OSWindow(this, 10, 10, 100, 100)
+    this.bullets = this.add.group({
+      classType: Bullet,
+      maxSize: 200,
+      runChildUpdate: true,
     })
 
-    this.add
-      .graphics()
-      .fillStyle(0x999999)
-      .lineStyle(2, 0x000000)
-      .strokeRect(
-        0,
-        this.game.scale.height - barHeight,
-        this.game.scale.width,
-        barHeight,
-      )
-      .fillRect(
-        0,
-        this.game.scale.height - barHeight,
-        this.game.scale.width,
-        barHeight,
-      )
+    this.time.addEvent({
+      delay: 200,
+      repeat: -1,
+      callback: () => {
+        const p = this.input.activePointer
+
+        const children =
+          this.enemies.getChildren() as Phaser.GameObjects.Sprite[]
+        const closest = children
+          .filter((c) => c.active && c.visible)
+          .sort((a, b) => {
+            const distA = Phaser.Math.Distance.BetweenPoints(a.getCenter(), p)
+            const distB = Phaser.Math.Distance.BetweenPoints(b.getCenter(), p)
+
+            return distA - distB
+          })?.[0]
+
+        if (!closest) return
+
+        const bullet = this.bullets.get(p.x, p.y)
+
+        if (bullet && bullet.body && closest) {
+          const body = bullet.body
+          bullet.setVisible(true).setActive(true)
+          const ang = Phaser.Math.Angle.BetweenPoints(p, closest.getCenter())
+          body.velocity.x = Math.cos(ang) * 100
+          body.velocity.y = Math.sin(ang) * 100
+        }
+      },
+    })
+
+    this.enemies = this.add.group({
+      classType: Enemy,
+      maxSize: 8,
+    })
+
+    this.time.addEvent({
+      delay: 2000,
+      repeat: -1,
+      callback: () => this.enemies.get(160, 100)?.reset(),
+    })
+  }
+
+  update() {
+    this.physics.overlap(this.enemies, this.bullets, (_a, _b) => {
+      const a = _a as Enemy
+      const b = _b as Bullet
+      if (!a.active || !b.active) return
+      a.damage(1)
+      b.setActive(false).setVisible(false)
+    })
   }
 }
