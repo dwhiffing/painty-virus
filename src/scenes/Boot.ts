@@ -16,7 +16,12 @@ export class Boot extends Scene {
   }
 
   preload() {
+    this.load.image('icon', 'favicon.png')
     this.load.setPath('assets')
+    this.load.spritesheet('icons', 'icons.png', {
+      frameHeight: 16,
+      frameWidth: 16,
+    })
     this.load.bitmapFont('clarity', 'clarity.png', 'clarity.xml')
   }
 
