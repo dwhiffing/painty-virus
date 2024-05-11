@@ -8,7 +8,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     super(scene, x, y, 'icon')
     this.setDepth(20)
     this.moveTimer = 999
-    this.health = 10
+    this.health = 5
     scene.physics.add.existing(this)
 
     this.scene.time.addEvent({
@@ -26,7 +26,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   reset() {
-    this.health = 10
+    this.health = 5
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = Phaser.Math.RND.between(8, 12)
     this.setVisible(true)
@@ -35,8 +35,6 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
   damage(amount: number) {
     this.health -= amount
-
-    console.log(this.health)
 
     if (this.health <= 0) {
       this.setActive(false).setVisible(false)

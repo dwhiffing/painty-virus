@@ -4,18 +4,19 @@ import { Icon } from '../entities/Icon'
 import { Enemy } from '../entities/Enemy'
 import { Bullet } from '../entities/Bullet'
 import { Canvas } from '../entities/Canvas'
-import { x, y, w, h } from '../constants'
+import { x, y, w, h, LEVELS } from '../constants'
 
 export class Game extends Scene {
   enemies: Phaser.GameObjects.Group
   bullets: Phaser.GameObjects.Group
+  text: Phaser.GameObjects.BitmapText
   constructor() {
     super('Game')
   }
 
   create() {
     this.cameras.main.setRoundPixels(false)
-    this.add.bitmapText(260, 180, 'clarity', 'Welcome', 8)
+    this.text = this.add.bitmapText(260, 180, 'clarity', 'Welcome', 8)
 
     new Paint(this, x, y, w, h)
     new Canvas(this, x, y, w, h)
@@ -63,11 +64,51 @@ export class Game extends Scene {
       maxSize: 8,
     })
 
+    this.data.set('wave', 0)
+    this.data.set('level', 0)
+    this.nextWave()
+  }
+
+  checkNextWave() {
+    const livingEnemies = this.enemies
+      .getChildren()
+      .filter((e) => e.active).length
+    if (livingEnemies === 0) {
+      this.data.inc('wave')
+      this.nextWave()
+    }
+  }
+  nextWave() {
+    let i = 0
+    const level = LEVELS[this.data.get('level')]
+    if (!level) {
+      this.text.text = 'You win'
+      this.time.delayedCall(4000, () => {
+        this.scene.restart()
+      })
+      return
+    }
+    const wave = level[this.data.get('wave')]
+    if (!wave) {
+      this.nextLevel()
+      return
+    }
+
     this.time.addEvent({
-      delay: 2000,
-      repeat: -1,
-      callback: () => this.enemies.get(160, 100)?.reset(),
+      delay: 500,
+      repeat: wave.enemies.length - 1,
+      callback: () => {
+        const enemyType = wave.enemies[i++]
+        // TODO: more enemy types
+        this.enemies.get(160, 100)?.reset()
+      },
     })
+  }
+
+  nextLevel() {
+    this.data.inc('level')
+    this.data.set('wave', 0)
+    this.nextWave()
   }
 
   update() {
@@ -77,6 +118,8 @@ export class Game extends Scene {
       if (!a.active || !b.active) return
       a.damage(1)
       b.setActive(false).setVisible(false)
+
+      this.checkNextWave()
     })
   }
 }
