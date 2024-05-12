@@ -90,9 +90,11 @@ export class Game extends Scene {
     await new Promise((resolve) => this.time.delayedCall(1000, resolve))
     await this.tacky.say('Open paint and draw me a picture!')
 
-    await new Promise((resolve) => {
-      this.events.once('paintopened', resolve)
-    })
+    if (!this.paint) {
+      await new Promise((resolve) => {
+        this.events.once('paintopened', resolve)
+      })
+    }
 
     await new Promise((resolve) => this.time.delayedCall(30000, resolve))
 
