@@ -61,7 +61,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       this.play('explode')
       this.scene.time.delayedCall(500, () => {
         this.setActive(false).setVisible(false)
-        this._scene.checkNextWave()
+        this._scene.antivirus.checkNextWave()
       })
     }
   }

@@ -3,7 +3,7 @@ import { Game } from '../scenes/Game'
 const COLORS = [
   0xffffff, 0xaaaaaa, 0x444444, 0x000000, 0xff0000, 0x00ff00, 0x0000ff,
 ]
-export class Paint {
+export class PaintUI {
   scene: Game
   constructor(scene: Game, x: number, y: number, w: number, h: number) {
     this.scene = scene
@@ -21,7 +21,9 @@ export class Paint {
       .fillStyle(526459)
       .fillRect(x + 1, y + 2, w - 3, 10)
       .lineBetween(x, y + 13, w + x, y + 13)
-    this.scene.add.bitmapText(x + 3, y + 1, 'clarity', 'Paint', 8).setDepth(10)
+    this.scene.add
+      .bitmapText(x + 3, y + 1, 'clarity', 'PaintUI', 8)
+      .setDepth(10)
 
     // weapon bar
     graphics

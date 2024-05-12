@@ -1,8 +1,8 @@
-import { Paint } from '../entities/Paint'
-import { Icon } from '../entities/Icon'
+import { PaintUI } from '../entities/PaintUI'
+import { Icon } from './Icon'
 import { Game } from '../scenes/Game'
 
-export class Canvas {
+export class PaintWindow {
   scene: Game
   constructor(scene: Game, x: number, y: number, w: number, h: number) {
     this.scene = scene
@@ -12,7 +12,7 @@ export class Canvas {
     this.scene.data.set('backgroundColor', 16777215)
 
     this.scene.cameras.main.setRoundPixels(false)
-    new Paint(this.scene, x, y, w, h)
+    new PaintUI(this.scene, x, y, w, h)
     new Icon(this.scene, 5, 5, () => {})
 
     const paintContainer = this.scene.add.graphics().setDepth(3)
@@ -156,6 +156,8 @@ export class Canvas {
       },
     })
   }
+
+  update() {}
 }
 const randomCoordinateWithinRadius = (_x: number, _y: number, r: number) => {
   const angle = Math.random() * 2 * Math.PI
