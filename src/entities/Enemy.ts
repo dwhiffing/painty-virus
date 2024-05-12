@@ -1,4 +1,4 @@
-import { x, y, h, w, ENEMY_TYPES } from '../constants'
+import { getInBounds, ENEMY_TYPES } from '../constants'
 import { Game } from '../scenes/Game'
 
 export class Enemy extends Phaser.GameObjects.Sprite {
@@ -82,12 +82,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.y += Math.cos(this._angle) * 1
     this.x += Math.sin(this._angle) * 1
 
-    if (
-      this.x < x + 30 ||
-      this.x > w + 20 ||
-      this.y < y + 16 ||
-      this.y > h + 8
-    ) {
+    if (!getInBounds(this.getCenter())) {
       this.setActive(false).setVisible(false)
       this.dying = true
       this._scene.loseLife()

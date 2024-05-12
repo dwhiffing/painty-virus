@@ -1,4 +1,13 @@
-import { LEVELS, x, y, w, h, Weapon, INITIAL_WEAPONS } from '../constants'
+import {
+  LEVELS,
+  x,
+  y,
+  w,
+  h,
+  Weapon,
+  INITIAL_WEAPONS,
+  getInBounds,
+} from '../constants'
 import { Game } from '../scenes/Game'
 
 import { Bullet } from './Bullet'
@@ -33,7 +42,9 @@ export class AntiVirus {
 
   setupWeapons() {
     this.scene.data.set('toolIndex', 0)
-    this.scene.input.on('pointerdown', () => {
+    this.scene.data.set('foregroundColor', 0)
+    this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (!getInBounds(p.position)) return
       const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
 
       if (!activeWeapon || activeWeapon.ammo <= 0) return

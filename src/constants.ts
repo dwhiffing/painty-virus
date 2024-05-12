@@ -67,3 +67,6 @@ export const INITIAL_WEAPONS = [
     damage: 50,
   },
 ]
+
+export const getInBounds = (p: Phaser.Math.Vector2) =>
+  !(p.x < x + 30 || p.x > w + 20 || p.y < y + 16 || p.y > h + 8)
