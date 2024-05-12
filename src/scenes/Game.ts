@@ -92,7 +92,7 @@ export class Game extends Scene {
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
-      if (!this.aboutAlert.open) {
+      if (!this.aboutAlert.open && !this.paint) {
         this.paint = new PaintWindow(this, x, y, w, h)
         this.events.emit('paintopened')
       }
