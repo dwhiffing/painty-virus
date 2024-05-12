@@ -8,6 +8,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   speed: number
   color: number
   dying: boolean
+  stunned: boolean
   _scene: Game
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 'enemies')
@@ -21,7 +22,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     this.scene.time.addEvent({
       callback: () => {
-        if (this.dying || !this.active) return
+        if (this.dying || !this.active || this.stunned) return
         this.moveTimer--
 
         if (this.moveTimer <= 0) {
@@ -56,8 +57,17 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   damage(amount: number) {
     this.health -= amount
 
+    this.setTintFill(0x999999)
+    this.stunned = true
+
+    this.scene.time.delayedCall(300, () => {
+      this.setTintFill(this.color)
+      this.stunned = false
+    })
+
     if (this.health <= 0 && !this.dying) {
       this.dying = true
+      this.setTintFill(0x000000)
       this.play('explode')
       this.scene.time.delayedCall(500, () => {
         this.setActive(false).setVisible(false)
