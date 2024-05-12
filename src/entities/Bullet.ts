@@ -92,7 +92,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
       return (
         Phaser.Math.Distance.BetweenPoints(this.getCenter(), e.getCenter()) <
-        this.explodeRadius / 2
+        this.explodeRadius / 1.8
       )
     })
 
