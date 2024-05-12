@@ -4,9 +4,9 @@ export const w = 221
 export const h = 180
 
 export const ENEMY_TYPES = [
-  { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
-  { type: 'tough', frame: 0, health: 30, speed: -5, size: 4 },
-  { type: 'quick', frame: 3, health: 5, speed: 8, size: 4 },
+  { type: 'base', frame: 2, health: 5, speed: 7, size: 4 },
+  { type: 'tough', frame: 0, health: 30, speed: 0, size: 4 },
+  { type: 'quick', frame: 3, health: 5, speed: 13, size: 4 },
   { type: 'boss', frame: 6, health: 100, speed: -20, size: 4 },
   // TODO: implement thief behaviour
   // { type: 'thief', frame: 4, health: 5, speed: 4, size: 4 },
@@ -108,7 +108,7 @@ export const INITIAL_WEAPONS = [
     lifetime: 100,
     health: 100,
     bulletSize: 10,
-    damage: 10,
+    damage: 15,
     explodeRadius: 0,
     setupTime: 0,
   },
@@ -182,7 +182,7 @@ export const INITIAL_WEAPONS = [
     lifetime: 0,
     health: 0,
     bulletSize: 10,
-    damage: 999,
+    damage: 30,
     explodeRadius: 9999,
     setupTime: 0,
   },

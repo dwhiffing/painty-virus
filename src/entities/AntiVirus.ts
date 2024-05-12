@@ -283,6 +283,7 @@ export class AntiVirus {
       }
       if (b.setupTime > 0 || b.damage === 0) return
       a.damage(b.damage)
+      b.setupTime = 10
       b.takeDamage(1)
     })
   }
