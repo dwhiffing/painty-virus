@@ -1,18 +1,24 @@
 import { x, y, h, w } from '../constants'
+import { Game } from '../scenes/Game'
 
 export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
   _angle: number
   health: number
-  constructor(scene: Phaser.Scene, x: number, y: number) {
-    super(scene, x, y, 'icon')
+  dying: boolean
+  _scene: Game
+  constructor(scene: Game, x: number, y: number) {
+    super(scene, x, y, 'enemies')
+    this._scene = scene
     this.setDepth(20)
     this.moveTimer = 999
     this.health = 5
+    this.dying = false
     scene.physics.add.existing(this)
 
     this.scene.time.addEvent({
       callback: () => {
+        if (this.dying) return
         this.moveTimer--
 
         if (this.moveTimer <= 0) {
@@ -25,23 +31,37 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     })
   }
 
-  reset() {
+  get _body() {
+    return this.body as Phaser.Physics.Arcade.Body
+  }
+
+  reset(type = 0) {
     this.health = 5
+    this.play(`enemy${type}`)
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = Phaser.Math.RND.between(8, 12)
+    this.dying = false
     this.setVisible(true)
     this.setActive(true)
+    this._body.setSize(4, 4)
   }
 
   damage(amount: number) {
     this.health -= amount
 
-    if (this.health <= 0) {
-      this.setActive(false).setVisible(false)
+    if (this.health <= 0 && !this.dying) {
+      this.dying = true
+      this.play('explode')
+      this.scene.time.delayedCall(500, () => {
+        this.setActive(false).setVisible(false)
+        this._scene.checkNextWave()
+      })
     }
   }
 
   move() {
+    if (this.dying) return
+
     this.y += Math.cos(this._angle) * 1
     this.x += Math.sin(this._angle) * 1
 
@@ -52,8 +72,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       this.y > h + 8
     ) {
       this.scene.scene.restart()
-      this.setActive(false)
-      this.setVisible(false)
+      this.setActive(false).setVisible(false)
     }
   }
 }

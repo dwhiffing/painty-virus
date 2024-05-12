@@ -34,10 +34,9 @@ export class Game extends Scene {
       callback: () => {
         const p = this.input.activePointer
 
-        const children =
-          this.enemies.getChildren() as Phaser.GameObjects.Sprite[]
+        const children = this.enemies.getChildren() as Enemy[]
         const closest = children
-          .filter((c) => c.active && c.visible)
+          .filter((c) => c.health > 0)
           .sort((a, b) => {
             const distA = Phaser.Math.Distance.BetweenPoints(a.getCenter(), p)
             const distB = Phaser.Math.Distance.BetweenPoints(b.getCenter(), p)
@@ -64,6 +63,25 @@ export class Game extends Scene {
       maxSize: 8,
     })
 
+    for (let i = 1; i < 6; i++) {
+      this.anims.create({
+        key: `enemy${i - 1}`,
+        frames: this.anims.generateFrameNumbers('enemies', {
+          frames: [i * 2 - 2, i * 2 - 1],
+        }),
+        frameRate: 2,
+        repeat: -1,
+      })
+    }
+
+    this.anims.create({
+      key: `explode`,
+      frames: this.anims.generateFrameNumbers('enemies', {
+        frames: [10, 11],
+      }),
+      frameRate: 5,
+    })
+
     this.data.set('wave', 0)
     this.data.set('level', 0)
     this.nextWave()
@@ -73,6 +91,8 @@ export class Game extends Scene {
     const livingEnemies = this.enemies
       .getChildren()
       .filter((e) => e.active).length
+
+    console.log({ livingEnemies })
     if (livingEnemies === 0) {
       this.data.inc('wave')
       this.nextWave()
@@ -99,8 +119,7 @@ export class Game extends Scene {
       repeat: wave.enemies.length - 1,
       callback: () => {
         const enemyType = wave.enemies[i++]
-        // TODO: more enemy types
-        this.enemies.get(160, 100)?.reset()
+        this.enemies.get(160, 100)?.reset(enemyType)
       },
     })
   }
@@ -118,8 +137,6 @@ export class Game extends Scene {
       if (!a.active || !b.active) return
       a.damage(1)
       b.setActive(false).setVisible(false)
-
-      this.checkNextWave()
     })
   }
 }

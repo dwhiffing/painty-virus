@@ -5,6 +5,6 @@ export const h = 180
 
 export const LEVELS = [
   [{ enemies: [0] }],
-  [{ enemies: [0, 0] }],
-  [{ enemies: [0, 0, 0] }],
+  [{ enemies: [1, 2] }],
+  [{ enemies: [2, 3, 4] }],
 ]
