@@ -59,10 +59,11 @@ export class AntiVirus {
   }
 
   setupWeapons() {
+    this.scene.data.set('toolIndex', 0)
     this.scene.input.on('pointerdown', () => {
       const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
 
-      if (activeWeapon.ammo <= 0) return
+      if (!activeWeapon || activeWeapon.ammo <= 0) return
 
       if (this.scene.data.get('toolIndex') === 0) {
         const p = this.scene.input.activePointer
