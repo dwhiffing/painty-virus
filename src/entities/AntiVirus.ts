@@ -61,7 +61,7 @@ export class AntiVirus {
       if (
         activeWeapon.ammo <= 0 ||
         activeWeapon.fireTiming > 0 ||
-        (toolIndex === 3 && distanceToCenter < 40)
+        ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 40)
       )
         return
 
@@ -111,6 +111,10 @@ export class AntiVirus {
 
   getClosestEnemyToCursor() {
     const p = this.scene.input.activePointer
+    return this.getClosestEnemyTo(p)
+  }
+
+  getClosestEnemyTo(p: { x: number; y: number }) {
     return this.getEnemies()
       .filter((c) => c.health > 0)
       .sort((a, b) => {
@@ -191,7 +195,22 @@ export class AntiVirus {
     this.scene.physics.overlap(this.enemies, this.bullets, (_a, _b) => {
       const a = _a as Enemy
       const b = _b as Bullet
-      if (!a.active || !b.active || b.setupTime > 0) return
+
+      if (!a.active || !b.active) return
+      if (b.isTower && b.shootTime <= 0) {
+        b.shootTime = b.maxShootTime
+        const closest = this.getClosestEnemyTo(b)
+        const bullet = this.bullets.get(b.x, b.y) as Bullet
+        const activeWeapon = { ...INITIAL_WEAPONS[0] }
+        bullet?.moveToward(
+          closest?.getCenter() ?? {
+            x: Phaser.Math.RND.between(x, w),
+            y: Phaser.Math.RND.between(y, h),
+          },
+          activeWeapon,
+        )
+      }
+      if (b.setupTime > 0 || b.damage === 0) return
       a.damage(b.damage)
       b.takeDamage(1)
     })

@@ -9,6 +9,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   health: number
   lifetime: number
   speed: number
+  isTower: boolean
+  shootTime: number
+  maxShootTime: number
   explodeRadius: number
   explodeCircle: Phaser.GameObjects.Arc
   maxLifetime: number
@@ -21,10 +24,6 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     this.setMask(this._scene.antivirus.mask)
 
-    this.scene.data.events.on('changedata', (_: any, b: string, c: any) => {
-      if (b === 'foregroundColor') this.setFillStyle(c)
-    })
-
     this.explodeCircle = this.scene.add
       .circle(10, 10, 10, 0x000000)
       .setAlpha(0)
@@ -35,6 +34,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     if (this.maxLifetime > -1) {
       this.lifetime--
       this.setAlpha(0.1 + this.lifetime / this.maxLifetime)
+    }
+    if (this.shootTime > -1) {
+      this.shootTime--
     }
 
     if (this.setupTime > 0) {
@@ -102,6 +104,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.health = options.health
     this.lifetime = options.lifetime
     this.speed = options.speed
+    this.isTower = !!options.isTower
+    this.maxShootTime = options.shootTime ?? 0
+    this.shootTime = options.shootTime ?? 0
     this.setupTime = options.setupTime
     this.explodeRadius = options.explodeRadius
     this.maxLifetime = options.lifetime
