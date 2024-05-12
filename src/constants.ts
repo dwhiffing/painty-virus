@@ -4,7 +4,7 @@ export const w = 221
 export const h = 180
 
 export const ENEMY_TYPES = [
-  { type: 'base', frame: 2, health: 5, speed: 7, size: 4 },
+  { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
   { type: 'tough', frame: 0, health: 30, speed: 0, size: 4 },
   { type: 'quick', frame: 3, health: 5, speed: 13, size: 4 },
   { type: 'boss', frame: 6, health: 100, speed: -20, size: 4 },

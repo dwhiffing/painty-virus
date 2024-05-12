@@ -121,7 +121,7 @@ export class Game extends Scene {
         })
       }
 
-      await new Promise((resolve) => this.time.delayedCall(20000, resolve))
+      await new Promise((resolve) => this.time.delayedCall(15000, resolve))
 
       this.virusAlert.show()
 
