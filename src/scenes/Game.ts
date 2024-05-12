@@ -40,7 +40,7 @@ export class Game extends Scene {
       to: 10,
       delay: 500,
       ease: Phaser.Math.Easing.Quadratic.In,
-      duration: 3000,
+      duration: 2000,
       onUpdate: (_, b) => {
         title.setAlpha(Math.floor(b.value) / 10)
       },
@@ -48,9 +48,9 @@ export class Game extends Scene {
         this.tweens.addCounter({
           from: 10,
           to: 0,
-          delay: 1500,
+          delay: 1000,
           ease: Phaser.Math.Easing.Quadratic.In,
-          duration: 3000,
+          duration: 2000,
           onUpdate: (_, b) => {
             title.setAlpha(Math.floor(b.value) / 10)
           },
