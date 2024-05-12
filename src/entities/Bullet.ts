@@ -12,6 +12,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   explodeRadius: number
   explodeCircle: Phaser.GameObjects.Arc
   maxLifetime: number
+  setupTime: number
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     this._scene = scene
@@ -31,10 +32,19 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setMask(this._scene.antivirus.mask)
   }
   update() {
-    this.lifetime--
+    if (this.maxLifetime > -1) {
+      this.lifetime--
+      this.setAlpha(0.1 + this.lifetime / this.maxLifetime)
+    }
 
-    this.setAlpha(0.1 + this.lifetime / this.maxLifetime)
-    if (this.lifetime <= 0) {
+    if (this.setupTime > 0) {
+      this.setAlpha(0.5)
+      this.setupTime--
+    } else if (this.alpha !== 1) {
+      this.setAlpha(1)
+    }
+
+    if (this.lifetime <= -2) {
       this.kill()
     }
     if (
@@ -78,7 +88,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
       return (
         Phaser.Math.Distance.BetweenPoints(this.getCenter(), e.getCenter()) <
-        this.explodeRadius
+        this.explodeRadius / 2
       )
     })
 
@@ -92,10 +102,13 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.health = options.health
     this.lifetime = options.lifetime
     this.speed = options.speed
+    this.setupTime = options.setupTime
     this.explodeRadius = options.explodeRadius
     this.maxLifetime = options.lifetime
+    this.setFillStyle(this.scene.data.get('foregroundColor'))
 
-    this._body.setSize(options.bulletSize, options.bulletSize)
+    const size = options.bodySize ?? options.bulletSize
+    this._body.setSize(size, size)
     this.setVisible(true).setActive(true)
     const ang = Phaser.Math.Angle.BetweenPoints(this.getCenter(), p)
     this.body!.velocity.x = Math.cos(ang) * this.speed

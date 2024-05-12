@@ -51,8 +51,10 @@ export interface Weapon {
   reloadRate: number // how many weapon ticks does it take to get another bullet?
   reloadTiming: number // current number of ticks til next bullet
   bulletSize: number
+  bodySize?: number
   explodeRadius: number
   damage: number
+  setupTime: number
 }
 
 export const INITIAL_WEAPONS = [
@@ -70,6 +72,24 @@ export const INITIAL_WEAPONS = [
     bulletSize: 2,
     damage: 1,
     explodeRadius: 0,
+    setupTime: 0,
+  },
+
+  // eraser
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 100,
+    reloadTiming: 100,
+    fireRate: 20,
+    speed: 200,
+    fireTiming: 0,
+    lifetime: 100,
+    health: 100,
+    bulletSize: 10,
+    damage: 50,
+    explodeRadius: 0,
+    setupTime: 0,
   },
 
   // line
@@ -86,22 +106,25 @@ export const INITIAL_WEAPONS = [
     bulletSize: 10,
     damage: 50,
     explodeRadius: 0,
+    setupTime: 0,
   },
 
   // brush
   {
-    maxAmmo: 3,
-    ammo: 3,
+    maxAmmo: 5,
+    ammo: 5,
     reloadRate: 100,
     reloadTiming: 100,
-    fireRate: 20,
-    speed: 200,
+    fireRate: 10,
+    speed: 0,
     fireTiming: 0,
-    lifetime: 100,
-    health: 100,
-    bulletSize: 10,
+    lifetime: -1,
+    health: 0,
+    bodySize: 20,
+    bulletSize: 8,
     damage: 50,
-    explodeRadius: 0,
+    explodeRadius: 50,
+    setupTime: 300,
   },
 
   // spray
@@ -118,22 +141,7 @@ export const INITIAL_WEAPONS = [
     bulletSize: 10,
     damage: 50,
     explodeRadius: 0,
-  },
-
-  // spray
-  {
-    maxAmmo: 3,
-    ammo: 3,
-    reloadRate: 100,
-    reloadTiming: 100,
-    fireRate: 20,
-    speed: 200,
-    fireTiming: 0,
-    lifetime: 100,
-    health: 100,
-    bulletSize: 10,
-    damage: 50,
-    explodeRadius: 0,
+    setupTime: 0,
   },
 
   // bucket
@@ -150,6 +158,7 @@ export const INITIAL_WEAPONS = [
     bulletSize: 10,
     damage: 999,
     explodeRadius: 9999,
+    setupTime: 0,
   },
 ]
 

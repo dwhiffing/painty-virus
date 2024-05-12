@@ -57,7 +57,13 @@ export class AntiVirus {
       const toolIndex = this.scene.data.get('toolIndex')
       const activeWeapon = this.weapons[toolIndex]
 
-      if (activeWeapon.ammo <= 0 || activeWeapon.fireTiming > 0) return
+      const distanceToCenter = Phaser.Math.Distance.Between(160, 100, p.x, p.y)
+      if (
+        activeWeapon.ammo <= 0 ||
+        activeWeapon.fireTiming > 0 ||
+        (toolIndex === 3 && distanceToCenter < 40)
+      )
+        return
 
       activeWeapon.ammo--
       activeWeapon.fireTiming = activeWeapon.fireRate
@@ -185,7 +191,7 @@ export class AntiVirus {
     this.scene.physics.overlap(this.enemies, this.bullets, (_a, _b) => {
       const a = _a as Enemy
       const b = _b as Bullet
-      if (!a.active || !b.active) return
+      if (!a.active || !b.active || b.setupTime > 0) return
       a.damage(b.damage)
       b.takeDamage(1)
     })
