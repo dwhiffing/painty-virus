@@ -19,13 +19,8 @@ export class Icon {
 
     this.scene.add.bitmapText(x, y + 33, 'clarity', text, 8).setCenterAlign()
 
-    let lastTime = 0
     icon.on('pointerdown', () => {
-      let clickDelay = this.scene.time.now - lastTime
-      lastTime = this.scene.time.now
-      if (clickDelay < 350) {
-        onClick()
-      }
+      onClick()
     })
   }
 }
