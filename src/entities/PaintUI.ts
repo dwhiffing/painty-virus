@@ -82,7 +82,6 @@ export class PaintUI {
 
     this.scene.events.on('updateammo', () => {
       this.scene.antivirus.weapons.forEach((w, i) => {
-        if (i === 0) console.log(w.reloadTiming / w.reloadRate)
         // @ts-ignore
         reloadRectangles[i].updateHeight(1 - w.reloadTiming / w.reloadRate)
 

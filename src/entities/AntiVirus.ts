@@ -54,6 +54,7 @@ export class AntiVirus {
 
     this.setupWeapons()
 
+    this.scene.tacky.say(`Level 1`)
     this.nextWave()
   }
 
@@ -133,9 +134,10 @@ export class AntiVirus {
     const level = LEVELS[this.scene.data.get('level')]
     if (!level) {
       this.scene.tacky.say('You win')
-      this.scene.time.delayedCall(4000, () => {
-        this.scene.scene.restart()
-      })
+      // TODO: what happens when you win?
+      // this.scene.time.delayedCall(4000, () => {
+      //   this.scene.scene.restart()
+      // })
       return
     }
     if (!this.wave) {
@@ -164,6 +166,9 @@ export class AntiVirus {
     this.scene.data.inc('level')
     this.scene.data.set('wave', 0)
     this.nextWave()
+
+    const level = LEVELS[this.scene.data.get('level')]
+    if (level) this.scene.tacky.say(`Level ${this.scene.data.get('level') + 1}`)
   }
 
   update() {

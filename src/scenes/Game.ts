@@ -24,8 +24,10 @@ export class Game extends Scene {
   create() {
     this.cameras.main.setRoundPixels(false)
 
+    this.data.set('gameovered', false)
     this.data.set('wave', 0)
     this.data.set('level', 0)
+    this.data.set('lives', 3)
     this.createAnimations()
 
     this.virusAlert = new Alert(this, 'virus')
@@ -177,6 +179,47 @@ export class Game extends Scene {
         frames: [14, 15],
       }),
       frameRate: 5,
+    })
+  }
+
+  async loseLife() {
+    if (this.data.get('gameovered') || this.data.get('lives') === 0) return
+
+    this.data.set('lives', this.data.get('lives') - 1)
+
+    if (this.data.get('lives') <= 0) {
+      this.gameover()
+    } else {
+      await this.tacky.say(`whoops!\n${this.data.get('lives')} lives left`)
+      this.antivirus.checkNextWave()
+    }
+  }
+
+  gameover() {
+    if (this.data.get('gameovered')) return
+
+    this.data.set('gameovered', true)
+
+    this.add
+      .graphics()
+      .fillStyle(0x0000ff)
+      .fillRect(0, 0, 320, 200)
+      .setDepth(9998)
+
+    this.add
+      .bitmapText(
+        160,
+        100,
+        'clarity',
+        'An Error has occured!\n\n\n\nError: 0E : 016F : GAMEOVER\n\n\n\n\nPress any key to continue...',
+        8,
+      )
+      .setDepth(9999)
+      .setOrigin(0.5)
+      .setCenterAlign()
+
+    this.input.once('pointerdown', () => {
+      this.scene.restart()
     })
   }
 

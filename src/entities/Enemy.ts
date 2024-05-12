@@ -21,7 +21,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     this.scene.time.addEvent({
       callback: () => {
-        if (this.dying) return
+        if (this.dying || !this.active) return
         this.moveTimer--
 
         if (this.moveTimer <= 0) {
@@ -67,7 +67,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   move() {
-    if (this.dying) return
+    if (this.dying || !this.active) return
 
     this.y += Math.cos(this._angle) * 1
     this.x += Math.sin(this._angle) * 1
@@ -78,8 +78,9 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       this.y < y + 16 ||
       this.y > h + 8
     ) {
-      this.scene.scene.restart()
       this.setActive(false).setVisible(false)
+      this.dying = true
+      this._scene.loseLife()
     }
   }
 }
