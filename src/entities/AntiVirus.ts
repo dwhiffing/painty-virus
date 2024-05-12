@@ -47,33 +47,37 @@ export class AntiVirus {
       if (!getInBounds(p.position)) return
       const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
 
-      if (!activeWeapon || activeWeapon.ammo <= 0) return
+      if (activeWeapon.ammo <= 0) return
 
       if (this.scene.data.get('toolIndex') === 0) {
         const p = this.scene.input.activePointer
         activeWeapon.ammo--
-        this.scene.events.emit('updateammo')
         const closest = this.getClosestEnemyToCursor()
         const bullet = this.bullets.get(p.x, p.y) as Bullet
 
-        bullet?.moveToward(closest?.getCenter(), activeWeapon.damage)
+        bullet?.moveToward(closest?.getCenter(), {
+          damage: activeWeapon.damage,
+          size: activeWeapon.bulletSize,
+        })
       }
+      this.scene.events.emit('updateammo')
     })
 
     this.scene.time.addEvent({
       delay: 200,
       repeat: -1,
       callback: () => {
-        const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
-
-        if (activeWeapon.ammo < activeWeapon.maxAmmo) {
-          if (activeWeapon.reloadTiming > 0) {
-            activeWeapon.reloadTiming--
-          } else {
-            activeWeapon.ammo++
-            activeWeapon.reloadTiming = activeWeapon.reloadRate
+        this.weapons.forEach((w) => {
+          if (w.ammo < w.maxAmmo) {
+            if (w.reloadTiming > 1) {
+              w.reloadTiming--
+            } else {
+              w.ammo++
+              w.reloadTiming = w.reloadRate
+            }
           }
-        }
+        })
+
         this.scene.events.emit('updateammo')
       },
     })
