@@ -6,11 +6,11 @@ export const h = 180
 export const ENEMY_TYPES = [
   { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
   { type: 'tough', frame: 0, health: 20, speed: -20, size: 4 },
-  { type: 'quick', frame: 4, health: 5, speed: 8, size: 4 },
-  // TODO: implement thief behaviour
-  { type: 'thief', frame: 3, health: 5, speed: 4, size: 4 },
-  // TODO: implement spawning behaviour
+  { type: 'quick', frame: 3, health: 5, speed: 8, size: 4 },
   { type: 'boss', frame: 6, health: 5, speed: -50, size: 4 },
+  // TODO: implement thief behaviour
+  { type: 'thief', frame: 4, health: 5, speed: 4, size: 4 },
+  // TODO: implement spawning behaviour
   // TODO: implement cluster behaviour
   { type: 'cluster', frame: 5, health: 5, speed: 2, size: 4 },
   // TODO: implement support behaviour
@@ -35,7 +35,7 @@ export const LEVELS = [
   [
     {
       speed: 1500,
-      enemies: [e(3, 3), e(4, 0), e(5, 0), e(6, 0)],
+      enemies: [e(3, 3)],
     },
   ],
 ]
@@ -71,7 +71,7 @@ export const INITIAL_WEAPONS = [
     speed: 50,
     fireTiming: 0,
     health: 1,
-    lifetime: 40,
+    lifetime: 100,
     bulletSize: 2,
     damage: 1,
     explodeRadius: 0,

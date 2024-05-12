@@ -35,7 +35,6 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   update() {
     if (this.maxLifetime > -1) {
       this.lifetime--
-      this.setAlpha(0.1 + this.lifetime / this.maxLifetime)
     }
     if (this.shootTime > -1) {
       this.shootTime--
