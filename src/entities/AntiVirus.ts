@@ -17,6 +17,7 @@ import { PaintUI } from './PaintUI'
 export class AntiVirus {
   scene: Game
   enemies: Phaser.GameObjects.Group
+  mask: Phaser.Display.Masks.GeometryMask
   bullets: Phaser.GameObjects.Group
   weapons: Weapon[]
   constructor(scene: Game) {
@@ -24,6 +25,13 @@ export class AntiVirus {
 
     new PaintUI(this.scene, x, y, w, h)
     this.enemies = this.scene.add.group({ classType: Enemy, maxSize: 8 })
+
+    const maskRect = this.scene.add
+      .rectangle(x + 29, y + 16, w - 59, h - 18, 0x000000)
+      .setOrigin(0)
+      .setVisible(false)
+
+    this.mask = maskRect.createGeometryMask()
 
     this.bullets = this.scene.add.group({
       classType: Bullet,
