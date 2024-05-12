@@ -7,7 +7,7 @@ import { x, y, w, h } from '../constants'
 import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 
-const DEBUG = true
+const DEBUG = false
 const TIMESCALE = 1
 
 export class Game extends Scene {
@@ -116,7 +116,7 @@ export class Game extends Scene {
         })
       }
 
-      await new Promise((resolve) => this.time.delayedCall(30000, resolve))
+      await new Promise((resolve) => this.time.delayedCall(20000, resolve))
 
       this.virusAlert.show()
 

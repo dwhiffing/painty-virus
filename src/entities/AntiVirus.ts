@@ -1,37 +1,9 @@
-import { LEVELS, x, y, w, h } from '../constants'
+import { LEVELS, x, y, w, h, Weapon, INITIAL_WEAPONS } from '../constants'
 import { Game } from '../scenes/Game'
 
 import { Bullet } from './Bullet'
 import { Enemy } from './Enemy'
 import { PaintUI } from './PaintUI'
-
-interface Weapon {
-  maxAmmo: number // max number of bullets stored, -1 means infinite
-  ammo: number // current number of bullets stored, -1 means infinite
-  fireRate: number // min time between firing bullets
-  reloadRate: number // how many weapon ticks does it take to get another bullet?
-  reloadTiming: number // current number of ticks til next bullet
-  damage: number
-}
-
-const INITIAL_WEAPONS = [
-  {
-    maxAmmo: 3,
-    ammo: 3,
-    reloadRate: 10,
-    reloadTiming: 10,
-    fireRate: 10,
-    damage: 50,
-  },
-  {
-    maxAmmo: 3,
-    ammo: 3,
-    reloadRate: 10,
-    reloadTiming: 0,
-    fireRate: 10,
-    damage: 50,
-  },
-]
 
 export class AntiVirus {
   scene: Game
