@@ -7,6 +7,7 @@ import { x, y, w, h } from '../constants'
 import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 
+const DEBUG = true
 const TIMESCALE = 1
 
 export class Game extends Scene {
@@ -34,41 +35,45 @@ export class Game extends Scene {
 
     this.time.addEvent({
       delay: 500,
+      repeat: -1,
       callback: () => {
         if (this.scale.zoom !== this.scale.getMaxZoom())
           this.scale.setZoom(this.scale.getMaxZoom())
       },
-      repeat: -1,
     })
 
     this.tweens.timeScale = TIMESCALE
     this.time.timeScale = TIMESCALE
 
-    this.tweens.addCounter({
-      from: 0,
-      to: 10,
-      delay: 500,
-      ease: Phaser.Math.Easing.Quadratic.In,
-      duration: 2000,
-      onUpdate: (_, b) => {
-        title.setAlpha(Math.floor(b.value) / 10)
-      },
-      onComplete: () => {
-        this.tweens.addCounter({
-          from: 10,
-          to: 0,
-          delay: 1000,
-          ease: Phaser.Math.Easing.Quadratic.In,
-          duration: 2000,
-          onUpdate: (_, b) => {
-            title.setAlpha(Math.floor(b.value) / 10)
-          },
-          onComplete: () => {
-            this.showDesktop()
-          },
-        })
-      },
-    })
+    if (DEBUG) {
+      this.showDesktop()
+    } else {
+      this.tweens.addCounter({
+        from: 0,
+        to: 10,
+        delay: 500,
+        ease: Phaser.Math.Easing.Quadratic.In,
+        duration: 2000,
+        onUpdate: (_, b) => {
+          title.setAlpha(Math.floor(b.value) / 10)
+        },
+        onComplete: () => {
+          this.tweens.addCounter({
+            from: 10,
+            to: 0,
+            delay: 1000,
+            ease: Phaser.Math.Easing.Quadratic.In,
+            duration: 2000,
+            onUpdate: (_, b) => {
+              title.setAlpha(Math.floor(b.value) / 10)
+            },
+            onComplete: () => {
+              this.showDesktop()
+            },
+          })
+        },
+      })
+    }
   }
 
   async showDesktop() {
@@ -76,7 +81,8 @@ export class Game extends Scene {
       this.aboutAlert.show()
     })
 
-    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    if (!DEBUG)
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
       if (!this.aboutAlert.open) {
@@ -85,39 +91,50 @@ export class Game extends Scene {
       }
     })
 
-    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    if (!DEBUG)
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     this.tacky = new Tacky(this)
 
-    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    if (!DEBUG)
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     this.runIntro()
   }
 
   async runIntro() {
-    await this.tacky.say('Welcome!')
-    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
-    await this.tacky.say('Open paint and draw me a picture!')
+    if (!DEBUG) {
+      await this.tacky.say('Welcome!')
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+      await this.tacky.say('Open paint and draw me a picture!')
 
-    if (!this.paint) {
+      if (!this.paint) {
+        await new Promise((resolve) => {
+          this.events.once('paintopened', resolve)
+        })
+      }
+
+      await new Promise((resolve) => this.time.delayedCall(30000, resolve))
+
+      this.virusAlert.show()
+
+      await this.tacky.say('Oh, looks like we need to remove some viruses')
+      await this.tacky.say(
+        'Are you surprised? This is blundersoft painty-virus!',
+      )
+      await this.tacky.say('Its supposed to do that!')
+
+      this.events.emit('virusalertshowbutton')
+
       await new Promise((resolve) => {
-        this.events.once('paintopened', resolve)
+        this.events.once('virusokclicked', resolve)
       })
     }
 
-    await new Promise((resolve) => this.time.delayedCall(30000, resolve))
+    if (!this.paint) {
+      this.paint = new PaintWindow(this, x, y, w, h)
+    }
 
-    this.virusAlert.show()
-
-    await this.tacky.say('Oh, looks like we need to remove some viruses')
-    await this.tacky.say('Are you surprised? This is blundersoft painty-virus!')
-    await this.tacky.say('Its supposed to do that!')
-
-    this.events.emit('virusalertshowbutton')
-
-    await new Promise((resolve) => {
-      this.events.once('virusokclicked', resolve)
-    })
     this.antivirus = new AntiVirus(this)
     this.paint.clear()
   }
