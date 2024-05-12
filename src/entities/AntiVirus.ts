@@ -26,8 +26,9 @@ export class AntiVirus {
 
     this.setupWeapons()
 
-    this.scene.tacky.say(`Level 1`)
-    this.nextWave()
+    this.scene.tacky.say(`Level 1`).then(() => {
+      this.nextWave()
+    })
   }
 
   setupWeapons() {
@@ -138,10 +139,14 @@ export class AntiVirus {
   nextLevel() {
     this.scene.data.inc('level')
     this.scene.data.set('wave', 0)
-    this.nextWave()
 
     const level = LEVELS[this.scene.data.get('level')]
-    if (level) this.scene.tacky.say(`Level ${this.scene.data.get('level') + 1}`)
+    if (level)
+      this.scene.tacky
+        .say(`Level ${this.scene.data.get('level') + 1}`)
+        .then(() => {
+          this.nextWave()
+        })
   }
 
   update() {

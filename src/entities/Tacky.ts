@@ -1,17 +1,5 @@
-import { Game } from './Game'
+import { Game } from '../scenes/Game'
 
-// TODO: need clippy placeholder sprite
-// TODO: need to make window for antivirus alert
-const INTRO_MESSAGES = [
-  'Welcome',
-  'Open paint and draw me a picture!',
-  '', // game waits until you open paint + 90 seconds
-  '', // alert opens, says "Last PaintUI Virus scan was 90 days ago"
-  'its supposed to do that!',
-  '', // clippy waits until player clicks "Delete viruses", then waits for alert scan animation
-  'Looks like you need to enter manual threat detection mode!',
-  '', // Game switches to anti virus mode
-]
 export class Tacky extends Phaser.GameObjects.Sprite {
   text: Phaser.GameObjects.BitmapText
   textBox: Phaser.GameObjects.Rectangle
@@ -20,18 +8,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     super(scene, 320 - 16, 200 - 23, 'tacky')
 
     this.text = this.scene.add
-      .bitmapText(
-        320 - 88,
-        200 - 40,
-        'clarity',
-        '',
-        // 'Welcome',
-        // 'Short message',
-        // 'This is the longest message possible',
-        // 'Here are some more words',
-        // 'Welcome! this is a bunch of words',
-        8,
-      )
+      .bitmapText(320 - 88, 200 - 40, 'clarity', '', 8)
       .setTint(0)
       .setOrigin(0, 1)
       .setMaxWidth(80)
@@ -55,8 +32,15 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     this.textBox.setSize(87, this.text.height + 6)
     this.play('tacky')
 
+    let timeout = 1500
+    if (text.length > 15) {
+      timeout = 2000
+    } else if (text.length > 30) {
+      timeout = 3000
+    }
+
     return new Promise((resolve) => {
-      this.scene.time.delayedCall(3000, () => {
+      this.scene.time.delayedCall(timeout, () => {
         this.textBox.setVisible(false)
         this.play('tacky-idle')
         this.text.text = ''
