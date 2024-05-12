@@ -32,10 +32,12 @@ export class PaintUI {
       .strokeRect(x + 2, y + 15, 25, h - 17)
 
     const rectangles2: Phaser.GameObjects.Rectangle[] = []
+    const reloadRectangles: Phaser.GameObjects.Rectangle[] = []
+    const weaponAmmo: Phaser.GameObjects.Rectangle[][] = []
     // weapon buttons
     for (let i = 0; i < 6; i++) {
       const rectangle = this.scene.add
-        .rectangle(x + 4, 28 + i * 21, 20, 20, i === 0 ? 0xaaaaaa : 0xffffff)
+        .rectangle(x + 4, 28 + i * 25, 20, 20, i === 0 ? 0xaaaaaa : 0xffffff)
         .setOrigin(0, 0)
         .setDepth(10)
         .setInteractive()
@@ -46,11 +48,49 @@ export class PaintUI {
         })
 
       this.scene.add
-        .sprite(x + 6, 30 + i * 21, 'icons', i)
+        .sprite(x + 6, 30 + i * 25, 'icons', i)
         .setOrigin(0)
-        .setDepth(10)
+        .setDepth(12)
       rectangles2.push(rectangle)
+
+      const reloadRectangle = this.scene.add
+        .rectangle(x + 4, 48 + i * 25, 20, 0, 0x888888)
+        .setOrigin(0, 1)
+        .setDepth(11)
+
+      // @ts-ignore
+      reloadRectangle.updateHeight = (n: number) => {
+        const _n = n === 1 ? 0 : n
+        reloadRectangle.y = 48 - 20 * _n + i * 25
+        reloadRectangle.height = 20 * _n
+      }
+
+      reloadRectangles.push(reloadRectangle)
+
+      weaponAmmo.push([])
+
+      for (let j = 0; j < 9; j++) {
+        const rectangle = this.scene.add
+          .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x444444)
+          .setOrigin(0, 0)
+          .setAlpha(0)
+          .setDepth(10)
+
+        weaponAmmo[i].push(rectangle)
+      }
     }
+
+    this.scene.events.on('updateammo', () => {
+      this.scene.antivirus.weapons.forEach((w, i) => {
+        if (i === 0) console.log(w.reloadTiming / w.reloadRate)
+        // @ts-ignore
+        reloadRectangles[i].updateHeight(1 - w.reloadTiming / w.reloadRate)
+
+        weaponAmmo[i].forEach((r, j) => {
+          r.setAlpha(w.ammo > j ? 1 : 0)
+        })
+      })
+    })
 
     // color bar
     graphics

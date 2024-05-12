@@ -2,6 +2,7 @@ import { h, w, x, y } from '../constants'
 
 export class Bullet extends Phaser.GameObjects.Rectangle {
   moveTimer: number
+  damage: number
   constructor(scene: Phaser.Scene, x: number, y: number) {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     scene.physics.add.existing(this)
@@ -23,8 +24,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     }
   }
 
-  moveToward(p: Phaser.Math.Vector2) {
+  moveToward(p: Phaser.Math.Vector2, damage = 1) {
     if (!p) return
+    this.damage = damage
     this.setVisible(true).setActive(true)
     const ang = Phaser.Math.Angle.BetweenPoints(this.getCenter(), p)
     this.body!.velocity.x = Math.cos(ang) * 100

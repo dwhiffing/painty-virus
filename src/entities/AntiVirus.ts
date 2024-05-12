@@ -5,10 +5,39 @@ import { Bullet } from './Bullet'
 import { Enemy } from './Enemy'
 import { PaintUI } from './PaintUI'
 
+interface Weapon {
+  maxAmmo: number // max number of bullets stored, -1 means infinite
+  ammo: number // current number of bullets stored, -1 means infinite
+  fireRate: number // min time between firing bullets
+  reloadRate: number // how many weapon ticks does it take to get another bullet?
+  reloadTiming: number // current number of ticks til next bullet
+  damage: number
+}
+
+const INITIAL_WEAPONS = [
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 10,
+    reloadTiming: 10,
+    fireRate: 10,
+    damage: 50,
+  },
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 10,
+    reloadTiming: 0,
+    fireRate: 10,
+    damage: 50,
+  },
+]
+
 export class AntiVirus {
   scene: Game
   enemies: Phaser.GameObjects.Group
   bullets: Phaser.GameObjects.Group
+  weapons: Weapon[]
   constructor(scene: Game) {
     this.scene = scene
 
@@ -21,18 +50,47 @@ export class AntiVirus {
       runChildUpdate: true,
     })
 
+    this.weapons = INITIAL_WEAPONS.map((w) => ({ ...w }))
+
+    this.setupWeapons()
+
+    this.nextWave()
+  }
+
+  setupWeapons() {
+    this.scene.input.on('pointerdown', () => {
+      const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
+
+      if (activeWeapon.ammo <= 0) return
+
+      if (this.scene.data.get('toolIndex') === 0) {
+        const p = this.scene.input.activePointer
+        activeWeapon.ammo--
+        this.scene.events.emit('updateammo')
+        const closest = this.getClosestEnemyToCursor()
+        const bullet = this.bullets.get(p.x, p.y) as Bullet
+
+        bullet?.moveToward(closest?.getCenter(), activeWeapon.damage)
+      }
+    })
+
     this.scene.time.addEvent({
       delay: 200,
       repeat: -1,
       callback: () => {
-        const p = this.scene.input.activePointer
-        const closest = this.getClosestEnemyToCursor()
-        const bullet = this.bullets.get(p.x, p.y) as Bullet
-        bullet?.moveToward(closest?.getCenter())
+        const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
+
+        if (activeWeapon.ammo < activeWeapon.maxAmmo) {
+          if (activeWeapon.reloadTiming > 0) {
+            activeWeapon.reloadTiming--
+          } else {
+            activeWeapon.ammo++
+            activeWeapon.reloadTiming = activeWeapon.reloadRate
+          }
+        }
+        this.scene.events.emit('updateammo')
       },
     })
-
-    this.nextWave()
   }
 
   getEnemies() {
@@ -114,7 +172,7 @@ export class AntiVirus {
       const a = _a as Enemy
       const b = _b as Bullet
       if (!a.active || !b.active) return
-      a.damage(1)
+      a.damage(b.damage)
       b.setActive(false).setVisible(false)
     })
   }

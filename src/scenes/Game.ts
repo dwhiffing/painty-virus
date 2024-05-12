@@ -131,7 +131,7 @@ export class Game extends Scene {
       })
     }
 
-    if (!this.paint) {
+    if (DEBUG) {
       this.paint = new PaintWindow(this, x, y, w, h)
     }
 

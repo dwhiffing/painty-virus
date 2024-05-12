@@ -53,7 +53,7 @@ export class PaintWindow {
     })
 
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
-      if (!isInCanvas(p)) return
+      if (!isInCanvas(p) || this.scene.antivirus) return
 
       this.paintGraphics.beginPath()
 
@@ -80,7 +80,7 @@ export class PaintWindow {
     })
 
     this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => {
-      if (!isInCanvas(p)) return
+      if (!isInCanvas(p) || this.scene.antivirus) return
 
       let { toolIndex, foregroundColor, backgroundColor } =
         this.scene.data.getAll()
@@ -143,6 +143,8 @@ export class PaintWindow {
       delay: 10,
       repeat: -1,
       callback: () => {
+        if (this.scene.antivirus) return
+
         const p = this.scene.input.activePointer
         if (p.isDown && activeSpray.active) {
           const p2 = randomCoordinateWithinRadius(p.x, p.y, 10)
