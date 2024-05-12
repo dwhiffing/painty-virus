@@ -1,10 +1,11 @@
-import { x, y, h, w } from '../constants'
+import { x, y, h, w, ENEMY_TYPES } from '../constants'
 import { Game } from '../scenes/Game'
 
 export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
   _angle: number
   health: number
+  speed: number
   color: number
   dying: boolean
   _scene: Game
@@ -24,7 +25,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.moveTimer--
 
         if (this.moveTimer <= 0) {
-          this.moveTimer = 10
+          this.moveTimer = 20 - this.speed
           this.move()
         }
       },
@@ -38,16 +39,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   reset(type = 0, color = 0x00ff00) {
-    this.health = 5
+    const enemyType = ENEMY_TYPES[type]
+    this.health = enemyType.health
     this.color = color
+    this.speed = enemyType.speed
     this.setTintFill(this.color)
-    this.play(`enemy${type}`)
+    this.play(`enemy${enemyType.frame}`)
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = Phaser.Math.RND.between(8, 12)
     this.dying = false
     this.setVisible(true)
     this.setActive(true)
-    this._body.setSize(4, 4)
+    this._body.setSize(enemyType.size, enemyType.size)
   }
 
   damage(amount: number) {

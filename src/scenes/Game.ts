@@ -63,7 +63,7 @@ export class Game extends Scene {
       maxSize: 8,
     })
 
-    for (let i = 1; i < 6; i++) {
+    for (let i = 1; i < 8; i++) {
       this.anims.create({
         key: `enemy${i - 1}`,
         frames: this.anims.generateFrameNumbers('enemies', {
@@ -77,7 +77,7 @@ export class Game extends Scene {
     this.anims.create({
       key: `explode`,
       frames: this.anims.generateFrameNumbers('enemies', {
-        frames: [10, 11],
+        frames: [14, 15],
       }),
       frameRate: 5,
     })
