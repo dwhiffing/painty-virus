@@ -43,27 +43,42 @@ export const LEVELS = [
 export interface Weapon {
   maxAmmo: number // max number of bullets stored, -1 means infinite
   ammo: number // current number of bullets stored, -1 means infinite
+  health: number // current number of bullets stored, -1 means infinite
+  lifetime: number // current number of bullets stored, -1 means infinite
+  speed: number // min time between firing bullets
+  fireTiming: number // min time between firing bullets
   fireRate: number // min time between firing bullets
   reloadRate: number // how many weapon ticks does it take to get another bullet?
   reloadTiming: number // current number of ticks til next bullet
+  bulletSize: number
   damage: number
 }
 
 export const INITIAL_WEAPONS = [
   {
-    maxAmmo: 3,
-    ammo: 3,
-    reloadRate: 10,
-    reloadTiming: 10,
-    fireRate: 10,
+    maxAmmo: 9,
+    ammo: 9,
+    reloadRate: 15,
+    reloadTiming: 15,
+    fireRate: 2,
+    speed: 50,
+    fireTiming: 0,
+    health: 1,
+    lifetime: 40,
+    bulletSize: 2,
     damage: 1,
   },
   {
     maxAmmo: 3,
     ammo: 3,
-    reloadRate: 10,
-    reloadTiming: 0,
-    fireRate: 10,
+    reloadRate: 100,
+    reloadTiming: 100,
+    fireRate: 20,
+    speed: 200,
+    fireTiming: 0,
+    lifetime: 100,
+    health: 100,
+    bulletSize: 10,
     damage: 50,
   },
 ]

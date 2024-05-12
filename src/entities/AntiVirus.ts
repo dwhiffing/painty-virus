@@ -45,29 +45,39 @@ export class AntiVirus {
     this.scene.data.set('foregroundColor', 0)
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!getInBounds(p.position)) return
-      const activeWeapon = this.weapons[this.scene.data.get('toolIndex')]
 
-      if (activeWeapon.ammo <= 0) return
+      const toolIndex = this.scene.data.get('toolIndex')
+      const activeWeapon = this.weapons[toolIndex]
 
-      if (this.scene.data.get('toolIndex') === 0) {
+      if (activeWeapon.ammo <= 0 || activeWeapon.fireTiming > 0) return
+
+      if (toolIndex === 0 || toolIndex === 1) {
         const p = this.scene.input.activePointer
         activeWeapon.ammo--
+        activeWeapon.fireTiming = activeWeapon.fireRate
         const closest = this.getClosestEnemyToCursor()
         const bullet = this.bullets.get(p.x, p.y) as Bullet
 
-        bullet?.moveToward(closest?.getCenter(), {
-          damage: activeWeapon.damage,
-          size: activeWeapon.bulletSize,
-        })
+        bullet?.moveToward(
+          closest?.getCenter() ?? {
+            x: Phaser.Math.RND.between(x, w),
+            y: Phaser.Math.RND.between(y, h),
+          },
+          activeWeapon,
+        )
       }
       this.scene.events.emit('updateammo')
     })
 
     this.scene.time.addEvent({
-      delay: 200,
+      delay: 50,
       repeat: -1,
       callback: () => {
         this.weapons.forEach((w) => {
+          if (w.fireTiming > 0) {
+            w.fireTiming--
+          }
+
           if (w.ammo < w.maxAmmo) {
             if (w.reloadTiming > 1) {
               w.reloadTiming--
@@ -171,7 +181,7 @@ export class AntiVirus {
       const b = _b as Bullet
       if (!a.active || !b.active) return
       a.damage(b.damage)
-      b.setActive(false).setVisible(false)
+      b.takeDamage(1)
     })
   }
 }
