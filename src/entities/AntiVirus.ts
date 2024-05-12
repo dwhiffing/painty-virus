@@ -51,21 +51,19 @@ export class AntiVirus {
 
       if (activeWeapon.ammo <= 0 || activeWeapon.fireTiming > 0) return
 
-      if (toolIndex === 0 || toolIndex === 1) {
-        const p = this.scene.input.activePointer
-        activeWeapon.ammo--
-        activeWeapon.fireTiming = activeWeapon.fireRate
-        const closest = this.getClosestEnemyToCursor()
-        const bullet = this.bullets.get(p.x, p.y) as Bullet
+      activeWeapon.ammo--
+      activeWeapon.fireTiming = activeWeapon.fireRate
+      const closest = this.getClosestEnemyToCursor()
+      const bullet = this.bullets.get(p.x, p.y) as Bullet
 
-        bullet?.moveToward(
-          closest?.getCenter() ?? {
-            x: Phaser.Math.RND.between(x, w),
-            y: Phaser.Math.RND.between(y, h),
-          },
-          activeWeapon,
-        )
-      }
+      bullet?.moveToward(
+        closest?.getCenter() ?? {
+          x: Phaser.Math.RND.between(x, w),
+          y: Phaser.Math.RND.between(y, h),
+        },
+        activeWeapon,
+      )
+
       this.scene.events.emit('updateammo')
     })
 

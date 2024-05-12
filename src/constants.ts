@@ -51,10 +51,12 @@ export interface Weapon {
   reloadRate: number // how many weapon ticks does it take to get another bullet?
   reloadTiming: number // current number of ticks til next bullet
   bulletSize: number
+  explodeRadius: number
   damage: number
 }
 
 export const INITIAL_WEAPONS = [
+  // pencil
   {
     maxAmmo: 9,
     ammo: 9,
@@ -67,7 +69,10 @@ export const INITIAL_WEAPONS = [
     lifetime: 40,
     bulletSize: 2,
     damage: 1,
+    explodeRadius: 0,
   },
+
+  // line
   {
     maxAmmo: 3,
     ammo: 3,
@@ -80,6 +85,71 @@ export const INITIAL_WEAPONS = [
     health: 100,
     bulletSize: 10,
     damage: 50,
+    explodeRadius: 0,
+  },
+
+  // brush
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 100,
+    reloadTiming: 100,
+    fireRate: 20,
+    speed: 200,
+    fireTiming: 0,
+    lifetime: 100,
+    health: 100,
+    bulletSize: 10,
+    damage: 50,
+    explodeRadius: 0,
+  },
+
+  // spray
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 100,
+    reloadTiming: 100,
+    fireRate: 20,
+    speed: 200,
+    fireTiming: 0,
+    lifetime: 100,
+    health: 100,
+    bulletSize: 10,
+    damage: 50,
+    explodeRadius: 0,
+  },
+
+  // spray
+  {
+    maxAmmo: 3,
+    ammo: 3,
+    reloadRate: 100,
+    reloadTiming: 100,
+    fireRate: 20,
+    speed: 200,
+    fireTiming: 0,
+    lifetime: 100,
+    health: 100,
+    bulletSize: 10,
+    damage: 50,
+    explodeRadius: 0,
+  },
+
+  // bucket
+  {
+    maxAmmo: 1,
+    ammo: 1,
+    reloadRate: 10,
+    reloadTiming: 10,
+    fireRate: 20,
+    speed: 0,
+    fireTiming: 0,
+    lifetime: 0,
+    health: 0,
+    bulletSize: 10,
+    damage: 999,
+    explodeRadius: 9999,
   },
 ]
 
