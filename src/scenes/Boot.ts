@@ -23,8 +23,8 @@ export class Boot extends Scene {
       frameWidth: 16,
     })
     this.load.spritesheet('enemies', 'enemies.png', {
-      frameHeight: 16,
-      frameWidth: 16,
+      frameHeight: 32,
+      frameWidth: 32,
     })
     this.load.bitmapFont('clarity', 'clarity.png', 'clarity.xml')
   }

@@ -118,8 +118,8 @@ export class Game extends Scene {
       delay: 500,
       repeat: wave.enemies.length - 1,
       callback: () => {
-        const enemyType = wave.enemies[i++]
-        this.enemies.get(160, 100)?.reset(enemyType)
+        const enemy = wave.enemies[i++]
+        this.enemies.get(160, 100)?.reset(enemy.type, enemy.color)
       },
     })
   }

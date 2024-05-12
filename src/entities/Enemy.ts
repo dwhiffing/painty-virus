@@ -5,6 +5,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
   _angle: number
   health: number
+  color: number
   dying: boolean
   _scene: Game
   constructor(scene: Game, x: number, y: number) {
@@ -13,6 +14,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.setDepth(20)
     this.moveTimer = 999
     this.health = 5
+    this.color = 0xff0000
     this.dying = false
     scene.physics.add.existing(this)
 
@@ -35,8 +37,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     return this.body as Phaser.Physics.Arcade.Body
   }
 
-  reset(type = 0) {
+  reset(type = 0, color = 0x00ff00) {
     this.health = 5
+    this.color = color
+    this.setTintFill(this.color)
     this.play(`enemy${type}`)
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = Phaser.Math.RND.between(8, 12)
