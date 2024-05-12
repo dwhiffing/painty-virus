@@ -1,6 +1,5 @@
 import { Game as GameScene } from './scenes/Game'
 import { Boot } from './scenes/Boot'
-import { Menu } from './scenes/Menu'
 import { AUTO, Game, Scale, Types } from 'phaser'
 
 const config: Types.Core.GameConfig = {
@@ -20,7 +19,7 @@ const config: Types.Core.GameConfig = {
     zoom: Phaser.Scale.MAX_ZOOM,
     autoCenter: Scale.CENTER_BOTH,
   },
-  scene: [Boot, Menu, GameScene],
+  scene: [Boot, GameScene],
 }
 
 export default new Game(config)

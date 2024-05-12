@@ -5,10 +5,15 @@ import { AntiVirus } from '../entities/AntiVirus'
 import { PaintWindow } from '../entities/PaintWindow'
 import { x, y, w, h } from '../constants'
 import { Tacky } from '../entities/Tacky'
+import { Alert } from '../entities/Alert'
+
+const TIMESCALE = 1
 
 export class Game extends Scene {
   antivirus: AntiVirus
   paint: PaintWindow
+  virusAlert: Alert
+  aboutAlert: Alert
   tacky: Tacky
 
   constructor() {
@@ -22,17 +27,60 @@ export class Game extends Scene {
     this.data.set('level', 0)
     this.createAnimations()
 
+    this.virusAlert = new Alert(this, 'virus')
+    this.aboutAlert = new Alert(this, 'about')
+
+    const title = this.add.image(160, 100, 'title').setAlpha(0)
+
+    this.tweens.timeScale = TIMESCALE
+    this.time.timeScale = TIMESCALE
+
+    this.tweens.addCounter({
+      from: 0,
+      to: 10,
+      delay: 500,
+      ease: Phaser.Math.Easing.Quadratic.In,
+      duration: 3000,
+      onUpdate: (_, b) => {
+        title.setAlpha(Math.floor(b.value) / 10)
+      },
+      onComplete: () => {
+        this.tweens.addCounter({
+          from: 10,
+          to: 0,
+          delay: 1500,
+          ease: Phaser.Math.Easing.Quadratic.In,
+          duration: 3000,
+          onUpdate: (_, b) => {
+            title.setAlpha(Math.floor(b.value) / 10)
+          },
+          onComplete: () => {
+            this.showDesktop()
+          },
+        })
+      },
+    })
+  }
+
+  async showDesktop() {
+    new Icon(this, 5, 2, 'help', 'about', () => {
+      this.aboutAlert.show()
+    })
+
+    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+
+    new Icon(this, 5, 55, 'painty', 'painty', () => {
+      if (!this.aboutAlert.open) {
+        this.paint = new PaintWindow(this, x, y, w, h)
+        this.events.emit('paintopened')
+      }
+    })
+
+    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+
     this.tacky = new Tacky(this)
 
-    new Icon(this, 5, 5, () => {
-      new PaintWindow(this, x, y, w, h)
-    })
-
-    new Icon(this, 5, 25, () => {
-      // TODO: why do i need to open a paint window here?
-      new PaintWindow(this, x, y, w, h)
-      this.antivirus = new AntiVirus(this)
-    })
+    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     this.runIntro()
   }
@@ -41,17 +89,31 @@ export class Game extends Scene {
     await this.tacky.say('Welcome!')
     await new Promise((resolve) => this.time.delayedCall(1000, resolve))
     await this.tacky.say('Open paint and draw me a picture!')
-    // clippy says "Welcome"
-    // clippy says "Open paint and draw me a picture!"
-    // clippy waits until you open paint
-    // clippy waits 90 seconds
-    // alert opens, says "Last PaintUI Virus scan was 90 days ago"
-    // clippy says "its supposed to do that!"
-    // clippy waits until player clicks "Delete viruses"
-    // Game switches to anti virus mode
+
+    await new Promise((resolve) => {
+      this.events.once('paintopened', resolve)
+    })
+
+    await new Promise((resolve) => this.time.delayedCall(30000, resolve))
+
+    this.virusAlert.show()
+
+    await this.tacky.say('Oh, looks like we need to remove some viruses')
+    await this.tacky.say('Are you surprised? This is blundersoft painty-virus!')
+    await this.tacky.say('Its supposed to do that!')
+
+    this.events.emit('virusalertshowbutton')
+
+    await new Promise((resolve) => {
+      this.events.once('virusokclicked', resolve)
+    })
+    this.antivirus = new AntiVirus(this)
+    this.paint.clear()
   }
 
   createAnimations() {
+    if (this.anims.exists('tacky')) return
+
     for (let i = 1; i < 8; i++) {
       this.anims.create({
         key: `enemy${i - 1}`,

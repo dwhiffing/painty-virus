@@ -12,7 +12,10 @@ export class Icon {
   ) {
     this.scene = scene
 
-    const icon = this.scene.add.sprite(x, y, texture).setOrigin(0, 0)
+    const icon = this.scene.add
+      .sprite(x, y, texture)
+      .setOrigin(0, 0)
+      .setInteractive()
 
     this.scene.add.bitmapText(x, y + 33, 'clarity', text, 8).setCenterAlign()
 

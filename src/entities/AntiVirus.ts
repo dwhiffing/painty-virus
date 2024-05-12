@@ -109,6 +109,7 @@ export class AntiVirus {
   }
 
   update() {
+    if (!this.enemies.children || !this.bullets.children) return
     this.scene.physics.overlap(this.enemies, this.bullets, (_a, _b) => {
       const a = _a as Enemy
       const b = _b as Bullet

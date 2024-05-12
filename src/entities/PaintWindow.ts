@@ -1,9 +1,9 @@
 import { PaintUI } from '../entities/PaintUI'
-import { Icon } from './Icon'
 import { Game } from '../scenes/Game'
 
 export class PaintWindow {
   scene: Game
+  paintGraphics: Phaser.GameObjects.Graphics
   constructor(scene: Game, x: number, y: number, w: number, h: number) {
     this.scene = scene
 
@@ -13,10 +13,9 @@ export class PaintWindow {
 
     this.scene.cameras.main.setRoundPixels(false)
     new PaintUI(this.scene, x, y, w, h)
-    new Icon(this.scene, 5, 5, () => {})
 
     const paintContainer = this.scene.add.graphics().setDepth(3)
-    const paintGraphics = this.scene.add.graphics().setDepth(4)
+    this.paintGraphics = this.scene.add.graphics().setDepth(4)
     const linePreview = this.scene.add.graphics().setDepth(4)
 
     let activeSpray = { active: false, x: 0, y: 0 }
@@ -36,11 +35,11 @@ export class PaintWindow {
     }
 
     this.scene.input.on('pointerup', (p: Phaser.Input.Pointer) => {
-      paintGraphics.closePath()
+      this.paintGraphics.closePath()
       if (this.scene.data.get('toolIndex') === 2) {
         if (activeLine.active) {
           linePreview.clear()
-          paintGraphics
+          this.paintGraphics
             .beginPath()
             .lineStyle(1, this.scene.data.get('foregroundColor'))
             .moveTo(activeLine.x, activeLine.y)
@@ -56,7 +55,7 @@ export class PaintWindow {
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!isInCanvas(p)) return
 
-      paintGraphics.beginPath()
+      this.paintGraphics.beginPath()
 
       if (this.scene.data.get('toolIndex') === 2 && !activeLine.active) {
         linePreview.moveTo(p.x, p.y)
@@ -74,7 +73,7 @@ export class PaintWindow {
       }
       if (this.scene.data.get('toolIndex') === 5) {
         //TODO: bucket should flood fill instead
-        paintGraphics
+        this.paintGraphics
           .fillStyle(this.scene.data.get('foregroundColor'))
           .fillRect(x + 29, y + 16, h - 18, h - 18)
       }
@@ -88,11 +87,11 @@ export class PaintWindow {
 
       if (toolIndex === 0) {
         if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
-          paintGraphics.moveTo(p.x, p.y)
+          this.paintGraphics.moveTo(p.x, p.y)
         }
 
         if (p.isDown) {
-          paintGraphics
+          this.paintGraphics
             .lineStyle(1, foregroundColor)
             .lineTo(p.x, p.y)
             .strokePath()
@@ -100,18 +99,18 @@ export class PaintWindow {
       } else if (toolIndex === 1) {
         // eraser
         if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
-          paintGraphics.moveTo(p.x, p.y)
+          this.paintGraphics.moveTo(p.x, p.y)
         }
 
         if (p.isDown) {
-          paintGraphics
+          this.paintGraphics
             .lineStyle(4, backgroundColor)
             .lineTo(p.x, p.y)
             .strokePath()
         }
       } else if (toolIndex === 2) {
         // if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
-        //   paintGraphics.moveTo(p.x, p.y)
+        //   this.paintGraphics.moveTo(p.x, p.y)
         // }
         if (p.isDown) {
           linePreview
@@ -125,7 +124,7 @@ export class PaintWindow {
       } else if (toolIndex === 3) {
         // brush
         if (p.isDown) {
-          paintGraphics.fillStyle(foregroundColor).fillCircle(p.x, p.y, 3)
+          this.paintGraphics.fillStyle(foregroundColor).fillCircle(p.x, p.y, 3)
         }
       } else if (toolIndex === 4) {
         // spray
@@ -148,7 +147,7 @@ export class PaintWindow {
         if (p.isDown && activeSpray.active) {
           const p2 = randomCoordinateWithinRadius(p.x, p.y, 10)
           if (isInCanvas(p2)) {
-            paintGraphics
+            this.paintGraphics
               .fillStyle(this.scene.data.get('foregroundColor'))
               .fillRect(p2.x, p2.y, 1, 1)
           }
@@ -157,6 +156,9 @@ export class PaintWindow {
     })
   }
 
+  clear() {
+    this.paintGraphics.clear()
+  }
   update() {}
 }
 const randomCoordinateWithinRadius = (_x: number, _y: number, r: number) => {
