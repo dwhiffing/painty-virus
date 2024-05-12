@@ -28,6 +28,11 @@ export class Game extends Scene {
     this.data.set('wave', 0)
     this.data.set('level', 0)
     this.data.set('lives', 3)
+
+    this.input.keyboard?.on('keydown', (e: any) => {
+      if (typeof +e.key === 'number' && +e.key < 7)
+        this.data.set('toolIndex', +e.key - 1)
+    })
     this.createAnimations()
 
     this.virusAlert = new Alert(this, 'virus')

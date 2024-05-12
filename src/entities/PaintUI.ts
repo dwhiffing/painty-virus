@@ -34,6 +34,15 @@ export class PaintUI {
     const rectangles2: Phaser.GameObjects.Rectangle[] = []
     const reloadRectangles: Phaser.GameObjects.Rectangle[] = []
     const weaponAmmo: Phaser.GameObjects.Rectangle[][] = []
+
+    this.scene.events.on('changedata', (_: any, key: string, value: any) => {
+      if (key === 'toolIndex') {
+        rectangles2.forEach((r) => r.setFillStyle(0xffffff))
+        const rectangle = rectangles2[value]
+
+        rectangle.setFillStyle(0xaaaaaa)
+      }
+    })
     // weapon buttons
     for (let i = 0; i < 6; i++) {
       const rectangle = this.scene.add
@@ -42,8 +51,6 @@ export class PaintUI {
         .setDepth(10)
         .setInteractive()
         .on('pointerdown', () => {
-          rectangles2.forEach((r) => r.setFillStyle(0xffffff))
-          rectangle.setFillStyle(0xaaaaaa)
           this.scene.data.set('toolIndex', i)
         })
 
