@@ -13,6 +13,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   shootTime: number
   maxShootTime: number
   explodeRadius: number
+  explodeDamage: number
+  explodeTween: Phaser.Tweens.BaseTween
   explodeCircle: Phaser.GameObjects.Arc
   maxLifetime: number
   setupTime: number
@@ -75,13 +77,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.setVisible(false).setActive(false)
     const enemies = this._scene.antivirus.enemies.getChildren() as Enemy[]
 
+    if (this.explodeTween) this.explodeTween.destroy()
     this.explodeCircle
       .setPosition(this.x, this.y)
       .setDisplaySize(this.explodeRadius, this.explodeRadius)
       .setFillStyle(this.scene.data.get('foregroundColor'))
       .setAlpha(1)
 
-    this.scene.tweens.add({
+    this.explodeTween = this.scene.tweens.add({
       targets: this.explodeCircle,
       alpha: 0,
     })
@@ -94,11 +97,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       )
     })
 
-    closeEnough.forEach((e) => e.damage(this.damage))
+    closeEnough.forEach((e) => e.damage(this.explodeDamage || this.damage))
   }
 
-  moveToward(p: Phaser.Math.Vector2, options: Weapon) {
-    if (!p) return
+  moveToward(
+    p: Phaser.Math.Vector2 | Phaser.Types.Math.Vector2Like | number | undefined,
+    options: Weapon,
+  ) {
+    if (typeof p === 'undefined') return
     this.damage = options.damage
     this.setSize(options.bulletSize, options.bulletSize)
     this.health = options.health
@@ -109,13 +115,17 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.shootTime = options.shootTime ?? 0
     this.setupTime = options.setupTime
     this.explodeRadius = options.explodeRadius
+    this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime
     this.setFillStyle(this.scene.data.get('foregroundColor'))
 
     const size = options.bodySize ?? options.bulletSize
     this._body.setSize(size, size)
     this.setVisible(true).setActive(true)
-    const ang = Phaser.Math.Angle.BetweenPoints(this.getCenter(), p)
+    const ang =
+      typeof p === 'number'
+        ? p
+        : Phaser.Math.Angle.BetweenPoints(this.getCenter(), p)
     this.body!.velocity.x = Math.cos(ang) * this.speed
     this.body!.velocity.y = Math.sin(ang) * this.speed
   }

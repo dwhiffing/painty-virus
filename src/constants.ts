@@ -52,6 +52,7 @@ export interface Weapon {
   reloadTiming: number // current number of ticks til next bullet
   bulletSize: number
   bodySize?: number
+  explodeDamage?: number
   shootTime?: number
   isTower?: boolean
   explodeRadius: number
@@ -96,18 +97,19 @@ export const INITIAL_WEAPONS = [
 
   // line
   {
-    maxAmmo: 3,
-    ammo: 3,
-    reloadRate: 100,
-    reloadTiming: 100,
-    fireRate: 20,
-    speed: 200,
+    maxAmmo: 9,
+    ammo: 9,
+    reloadRate: 50,
+    reloadTiming: 50,
+    fireRate: 2,
+    speed: 10,
     fireTiming: 0,
-    lifetime: 100,
-    health: 100,
-    bulletSize: 10,
-    damage: 50,
-    explodeRadius: 0,
+    lifetime: 30,
+    health: 10,
+    bulletSize: 3,
+    damage: 0,
+    explodeDamage: 10,
+    explodeRadius: 10,
     setupTime: 0,
   },
 

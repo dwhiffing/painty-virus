@@ -49,18 +49,79 @@ export class AntiVirus {
   }
 
   setupWeapons() {
+    const lineGraphics = this.scene.add.graphics().setDepth(99)
+    lineGraphics.lineStyle(1, 0x000000)
+
     this.scene.data.set('toolIndex', 0)
     this.scene.data.set('foregroundColor', 0)
+    this.scene.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+      const toolIndex = this.scene.data.get('toolIndex')
+      const start = this.scene.data.get('linestart')
+      lineGraphics.clear()
+      if (!start || toolIndex !== 2 || this.scene.data.get('linedist') < 5) {
+        this.scene.data.set('linestart', undefined)
+
+        return
+      }
+
+      const activeWeapon = this.weapons[toolIndex]
+
+      if (activeWeapon.ammo <= 0 || activeWeapon.fireTiming > 0) return
+
+      activeWeapon.ammo--
+      activeWeapon.fireTiming = activeWeapon.fireRate
+      const bullet = this.bullets.get(start.x, start.y) as Bullet
+
+      activeWeapon.speed = this.scene.data.get('linedist') * 4
+      activeWeapon.explodeRadius = this.scene.data.get('linedist')
+
+      bullet?.moveToward(this.scene.data.get('lineangle'), activeWeapon)
+
+      this.scene.events.emit('updateammo')
+      this.scene.data.set('linestart', undefined)
+    })
+
+    this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => {
+      const toolIndex = this.scene.data.get('toolIndex')
+      const start = this.scene.data.get('linestart')
+      if (!getInBounds(p.position) || toolIndex !== 2 || !start) return
+
+      const angle = Phaser.Math.Angle.BetweenPoints(start, p)
+      let dist = Math.min(Phaser.Math.Distance.BetweenPoints(start, p), 30)
+      if (dist < 3) dist = 0
+
+      this.scene.data.set(
+        'lineangle',
+        Phaser.Math.Angle.BetweenPoints(p, start),
+      )
+      this.scene.data.set('linedist', dist)
+      const f = {
+        x: start.x + dist * Math.cos(angle),
+        y: start.y + dist * Math.sin(angle),
+      }
+
+      lineGraphics.clear()
+      lineGraphics.lineStyle(1, 0x000000)
+      lineGraphics.moveTo(start.x, start.y)
+      lineGraphics.lineTo(f.x, f.y)
+      lineGraphics.stroke()
+    })
+
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!getInBounds(p.position)) return
 
       const toolIndex = this.scene.data.get('toolIndex')
       const activeWeapon = this.weapons[toolIndex]
 
+      if (toolIndex === 2 && activeWeapon.ammo > 0) {
+        this.scene.data.set('linestart', { ...p.position })
+      }
+
       const distanceToCenter = Phaser.Math.Distance.Between(160, 100, p.x, p.y)
       if (
         activeWeapon.ammo <= 0 ||
         activeWeapon.fireTiming > 0 ||
+        toolIndex === 2 ||
         ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 40)
       )
         return
