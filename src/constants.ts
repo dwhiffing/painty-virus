@@ -5,11 +5,15 @@ export const h = 180
 
 export const ENEMY_TYPES = [
   { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
-  { type: 'tough', frame: 0, health: 5, speed: 2, size: 40 },
-  { type: 'quick', frame: 4, health: 5, speed: 10, size: 4 },
+  { type: 'tough', frame: 0, health: 20, speed: -20, size: 4 },
+  { type: 'quick', frame: 4, health: 5, speed: 8, size: 4 },
+  // TODO: implement thief behaviour
   { type: 'thief', frame: 3, health: 5, speed: 4, size: 4 },
-  { type: 'boss', frame: 6, health: 5, speed: 1, size: 4 },
+  // TODO: implement spawning behaviour
+  { type: 'boss', frame: 6, health: 5, speed: -50, size: 4 },
+  // TODO: implement cluster behaviour
   { type: 'cluster', frame: 5, health: 5, speed: 2, size: 4 },
+  // TODO: implement support behaviour
   { type: 'support', frame: 1, health: 5, speed: 4, size: 4 },
 ]
 

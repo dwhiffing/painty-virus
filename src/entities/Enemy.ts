@@ -25,7 +25,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.moveTimer--
 
         if (this.moveTimer <= 0) {
-          this.moveTimer = 20 - this.speed
+          this.moveTimer = 10 - this.speed
           this.move()
         }
       },
@@ -46,7 +46,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.setTintFill(this.color)
     this.play(`enemy${enemyType.frame}`)
     this._angle = Phaser.Math.RND.rotation()
-    this.moveTimer = Phaser.Math.RND.between(8, 12)
+    this.moveTimer = 10 - this.speed
     this.dying = false
     this.setVisible(true)
     this.setActive(true)
