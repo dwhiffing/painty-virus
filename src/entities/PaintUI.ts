@@ -1,7 +1,7 @@
 import { Game } from '../scenes/Game'
 
 const COLORS = [
-  0xffffff, 0xaaaaaa, 0x444444, 0x000000, 0xff0000, 0x00ff00, 0x0000ff,
+  0x000000, 0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff,
 ]
 export class PaintUI {
   scene: Game
@@ -112,9 +112,15 @@ export class PaintUI {
     ]
 
     // color buttons
-    for (let i = 1; i < 7; i++) {
+    for (let i = 1; i < 8; i++) {
       const rectangle = this.scene.add
-        .rectangle(x + w - 25, 28 + i * 21, 20, 20, COLORS[i - 1])
+        .rectangle(
+          x + w - 25 + (i === 0 ? 0 : 3),
+          i === 0 ? 28 : 34 + i * 17,
+          i === 0 ? 20 : 14,
+          i === 0 ? 20 : 14,
+          COLORS[i - 1],
+        )
         .setOrigin(0, 0)
         .setDepth(10)
         .setInteractive()
