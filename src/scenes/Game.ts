@@ -32,6 +32,15 @@ export class Game extends Scene {
 
     const title = this.add.image(160, 100, 'title').setAlpha(0)
 
+    this.time.addEvent({
+      delay: 500,
+      callback: () => {
+        if (this.scale.zoom !== this.scale.getMaxZoom())
+          this.scale.setZoom(this.scale.getMaxZoom())
+      },
+      repeat: -1,
+    })
+
     this.tweens.timeScale = TIMESCALE
     this.time.timeScale = TIMESCALE
 
