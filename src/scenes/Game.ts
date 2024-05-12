@@ -92,14 +92,22 @@ export class Game extends Scene {
       .getChildren()
       .filter((e) => e.active).length
 
-    console.log({ livingEnemies })
-    if (livingEnemies === 0) {
+    const remainingEnemies =
+      this.wave.enemies.length - this.data.get('enemyIndex')
+
+    if (livingEnemies <= 0 && remainingEnemies <= 0) {
       this.data.inc('wave')
       this.nextWave()
     }
   }
+
+  get wave() {
+    const level = LEVELS[this.data.get('level')]
+    return level?.[this.data.get('wave')]
+  }
+
   nextWave() {
-    let i = 0
+    this.data.set('enemyIndex', 0)
     const level = LEVELS[this.data.get('level')]
     if (!level) {
       this.text.text = 'You win'
@@ -108,20 +116,26 @@ export class Game extends Scene {
       })
       return
     }
-    const wave = level[this.data.get('wave')]
-    if (!wave) {
+    if (!this.wave) {
       this.nextLevel()
       return
     }
 
-    this.time.addEvent({
-      delay: 500,
-      repeat: wave.enemies.length - 1,
-      callback: () => {
-        const enemy = wave.enemies[i++]
+    const nextEnemy = () => {
+      const enemy = this.wave?.enemies[this.data.get('enemyIndex')]
+      if (enemy) {
+        this.data.inc('enemyIndex')
         this.enemies.get(160, 100)?.reset(enemy.type, enemy.color)
-      },
-    })
+      }
+    }
+
+    nextEnemy()
+    if (this.wave.enemies.length > 1)
+      this.time.addEvent({
+        delay: this.wave.speed,
+        repeat: this.wave.enemies.length - 1,
+        callback: nextEnemy,
+      })
   }
 
   nextLevel() {

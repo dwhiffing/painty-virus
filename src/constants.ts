@@ -25,14 +25,16 @@ const e = (type: number, color: number) => ({
 })
 
 export const LEVELS = [
-  [{ enemies: [e(0, 0)] }],
+  [{ speed: 5000, enemies: [e(0, 0)] }],
   [
     {
+      speed: 5000,
       enemies: [e(1, 1), e(2, 2)],
     },
   ],
   [
     {
+      speed: 5000,
       enemies: [e(3, 3), e(4, 0), e(5, 0), e(6, 0)],
     },
   ],
