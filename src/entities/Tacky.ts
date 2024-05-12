@@ -32,11 +32,11 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     this.textBox.setSize(87, this.text.height + 6)
     this.play('tacky')
 
-    let timeout = 1500
+    let timeout = 2000
     if (text.length > 15) {
-      timeout = 2000
-    } else if (text.length > 30) {
       timeout = 3000
+    } else if (text.length > 30) {
+      timeout = 5000
     }
 
     return new Promise((resolve) => {

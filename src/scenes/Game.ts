@@ -120,17 +120,25 @@ export class Game extends Scene {
 
       this.virusAlert.show()
 
+      await new Promise((resolve) => this.time.delayedCall(2000, resolve))
+
       await this.tacky.say('Oh, looks like we need to remove some viruses')
+
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+
       await this.tacky.say(
         'Are you surprised? This is blundersoft painty-virus!',
       )
+      await new Promise((resolve) => this.time.delayedCall(500, resolve))
       await this.tacky.say('Its supposed to do that!')
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
       this.events.emit('virusalertshowbutton')
 
       await new Promise((resolve) => {
         this.events.once('virusokclicked', resolve)
       })
+      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
     }
 
     if (DEBUG) {
@@ -157,7 +165,7 @@ export class Game extends Scene {
 
     this.anims.create({
       key: `tacky`,
-      frameRate: 2,
+      frameRate: 5,
       repeat: -1,
       frames: this.anims.generateFrameNumbers('tacky', {
         frames: [0, 1],
@@ -211,7 +219,7 @@ export class Game extends Scene {
         160,
         100,
         'clarity',
-        'An Error has occured!\n\n\n\nError: 0E : 016F : GAMEOVER\n\n\n\n\nPress any key to continue...',
+        'An Error has occured!\n\n\n\nError: 0E : 06F : GAMEOVER\n\n\n\n\nPress any key to continue...',
         8,
       )
       .setDepth(9999)
