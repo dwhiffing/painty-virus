@@ -5,9 +5,9 @@ export const h = 180
 
 export const ENEMY_TYPES = [
   { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
-  { type: 'tough', frame: 0, health: 15, speed: -20, size: 4 },
+  { type: 'tough', frame: 0, health: 30, speed: -5, size: 4 },
   { type: 'quick', frame: 3, health: 5, speed: 8, size: 4 },
-  { type: 'boss', frame: 6, health: 60, speed: -50, size: 4 },
+  { type: 'boss', frame: 6, health: 100, speed: -20, size: 4 },
   // TODO: implement thief behaviour
   // { type: 'thief', frame: 4, health: 5, speed: 4, size: 4 },
   // TODO: implement cluster behaviour
@@ -100,15 +100,15 @@ export const INITIAL_WEAPONS = [
   {
     maxAmmo: 3,
     ammo: 3,
-    reloadRate: 100,
-    reloadTiming: 100,
+    reloadRate: 200,
+    reloadTiming: 200,
     fireRate: 20,
     speed: 200,
     fireTiming: 0,
     lifetime: 100,
     health: 100,
     bulletSize: 10,
-    damage: 50,
+    damage: 10,
     explodeRadius: 0,
     setupTime: 0,
   },
@@ -117,8 +117,8 @@ export const INITIAL_WEAPONS = [
   {
     maxAmmo: 5,
     ammo: 5,
-    reloadRate: 50,
-    reloadTiming: 50,
+    reloadRate: 100,
+    reloadTiming: 100,
     fireRate: 2,
     speed: 10,
     fireTiming: 0,
@@ -144,17 +144,18 @@ export const INITIAL_WEAPONS = [
     health: 0,
     bodySize: 20,
     bulletSize: 8,
-    damage: 50,
+    damage: 1,
+    explodeDamage: 30,
     explodeRadius: 50,
-    setupTime: 300,
+    setupTime: 160,
   },
 
   // spray
   {
     maxAmmo: 1,
     ammo: 1,
-    reloadRate: 200,
-    reloadTiming: 200,
+    reloadRate: 500,
+    reloadTiming: 500,
     fireRate: 10,
     speed: 0,
     fireTiming: 0,

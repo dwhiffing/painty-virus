@@ -217,7 +217,7 @@ export class Game extends Scene {
       .graphics()
       .fillStyle(0x0000ff)
       .fillRect(0, 0, 320, 200)
-      .setDepth(9998)
+      .setDepth(99998)
 
     this.add
       .bitmapText(
@@ -227,7 +227,7 @@ export class Game extends Scene {
         'An Error has occured!\n\n\n\nError: 0E : 06F : GAMEOVER\n\n\n\n\nPress any key to continue...',
         8,
       )
-      .setDepth(9999)
+      .setDepth(99999)
       .setOrigin(0.5)
       .setCenterAlign()
 

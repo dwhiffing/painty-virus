@@ -26,17 +26,17 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       .setVisible(false)
   }
 
-  say(text: string): Promise<void> {
+  say(text: string, _timeout?: number): Promise<void> {
     this.textBox.setVisible(true)
     this.text.text = text
     this.textBox.setSize(87, this.text.height + 6)
     this.play('tacky')
 
-    let timeout = 2000
+    let timeout = _timeout ?? 2000
     if (text.length > 15) {
-      timeout = 3000
+      if (!_timeout) timeout = 3000
     } else if (text.length > 30) {
-      timeout = 5000
+      if (!_timeout) timeout = 5000
     }
 
     return new Promise((resolve) => {

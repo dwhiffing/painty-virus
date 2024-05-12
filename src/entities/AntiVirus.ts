@@ -48,6 +48,43 @@ export class AntiVirus {
     })
   }
 
+  shootActiveWeapon() {
+    const p = this.scene.input.activePointer
+    const toolIndex = this.scene.data.get('toolIndex')
+    const activeWeapon = this.weapons[toolIndex]
+
+    if (toolIndex === 2 && activeWeapon.ammo > 0) {
+      this.scene.data.set('linestart', { ...p.position })
+    }
+
+    const distanceToCenter = Phaser.Math.Distance.Between(160, 100, p.x, p.y)
+    if (
+      activeWeapon.ammo <= 0 ||
+      activeWeapon.fireTiming > 0 ||
+      toolIndex === 2 ||
+      ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 30)
+    ) {
+      if ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 30) {
+        this.scene.tacky.say('too close to center!')
+      }
+      return
+    }
+    activeWeapon.ammo--
+    activeWeapon.fireTiming = activeWeapon.fireRate
+    const closest = this.getClosestEnemyToCursor()
+    const bullet = this.bullets.get(p.x, p.y) as Bullet
+
+    bullet?.moveToward(
+      closest?.getCenter() ?? {
+        x: Phaser.Math.RND.between(x, w),
+        y: Phaser.Math.RND.between(y, h),
+      },
+      activeWeapon,
+    )
+
+    this.scene.events.emit('updateammo')
+  }
+
   setupWeapons() {
     const lineGraphics = this.scene.add.graphics().setDepth(99)
     lineGraphics.lineStyle(1, 0x000000)
@@ -110,36 +147,7 @@ export class AntiVirus {
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!getInBounds(p.position)) return
 
-      const toolIndex = this.scene.data.get('toolIndex')
-      const activeWeapon = this.weapons[toolIndex]
-
-      if (toolIndex === 2 && activeWeapon.ammo > 0) {
-        this.scene.data.set('linestart', { ...p.position })
-      }
-
-      const distanceToCenter = Phaser.Math.Distance.Between(160, 100, p.x, p.y)
-      if (
-        activeWeapon.ammo <= 0 ||
-        activeWeapon.fireTiming > 0 ||
-        toolIndex === 2 ||
-        ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 40)
-      )
-        return
-
-      activeWeapon.ammo--
-      activeWeapon.fireTiming = activeWeapon.fireRate
-      const closest = this.getClosestEnemyToCursor()
-      const bullet = this.bullets.get(p.x, p.y) as Bullet
-
-      bullet?.moveToward(
-        closest?.getCenter() ?? {
-          x: Phaser.Math.RND.between(x, w),
-          y: Phaser.Math.RND.between(y, h),
-        },
-        activeWeapon,
-      )
-
-      this.scene.events.emit('updateammo')
+      this.shootActiveWeapon()
     })
 
     this.scene.time.addEvent({
@@ -206,20 +214,11 @@ export class AntiVirus {
   }
 
   nextWave() {
-    this.scene.data.set('enemyIndex', 0)
-    const level = LEVELS[this.scene.data.get('level')]
-    if (!level) {
-      this.scene.tacky.say('You win')
-      // TODO: what happens when you win?
-      // this.scene.time.delayedCall(4000, () => {
-      //   this.scene.scene.restart()
-      // })
-      return
-    }
     if (!this.wave) {
       this.nextLevel()
       return
     }
+    this.scene.data.set('enemyIndex', 0)
 
     const nextEnemy = () => {
       const enemy = this.wave?.enemies[this.scene.data.get('enemyIndex')]
@@ -249,9 +248,20 @@ export class AntiVirus {
         .then(() => {
           this.nextWave()
         })
+
+    if (!level) {
+      this.scene.tacky.say('You win', Infinity)
+      return
+    }
   }
 
   update() {
+    if (
+      this.scene.input.activePointer.isDown &&
+      this.scene.data.get('toolIndex') === 0
+    ) {
+      this.shootActiveWeapon()
+    }
     if (!this.enemies.children || !this.bullets.children) return
     this.scene.physics.overlap(this.enemies, this.bullets, (_a, _b) => {
       const a = _a as Enemy
@@ -262,7 +272,7 @@ export class AntiVirus {
         b.shootTime = b.maxShootTime
         const closest = this.getClosestEnemyTo(b)
         const bullet = this.bullets.get(b.x, b.y) as Bullet
-        const activeWeapon = { ...INITIAL_WEAPONS[0] }
+        const activeWeapon = { ...INITIAL_WEAPONS[0], speed: 100 }
         bullet?.moveToward(
           closest?.getCenter() ?? {
             x: Phaser.Math.RND.between(x, w),
