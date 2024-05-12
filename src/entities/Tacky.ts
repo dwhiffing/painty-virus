@@ -12,17 +12,17 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       .setTint(0)
       .setOrigin(0, 1)
       .setMaxWidth(80)
-      .setDepth(101)
+      .setDepth(10001)
 
     this.scene.add.existing(this)
 
-    this.setDepth(102)
+    this.setDepth(10002)
 
     this.textBox = this.scene.add
       .rectangle(320 - 5, 200 - 37, 87, this.text.height + 6, 13421721)
       .setStrokeStyle(1, 6710886)
       .setOrigin(1, 1)
-      .setDepth(100)
+      .setDepth(10000)
       .setVisible(false)
   }
 
