@@ -227,7 +227,8 @@ export class Game extends Scene {
       .setCenterAlign()
 
     this.input.once('pointerdown', () => {
-      this.scene.restart()
+      window.location.reload()
+      // this.scene.restart()
     })
   }
 
