@@ -74,7 +74,7 @@ export class AntiVirus {
     this.scene.data.set('enemyIndex', 0)
     const level = LEVELS[this.scene.data.get('level')]
     if (!level) {
-      this.scene.text.text = 'You win'
+      this.scene.tacky.say('You win')
       this.scene.time.delayedCall(4000, () => {
         this.scene.scene.restart()
       })

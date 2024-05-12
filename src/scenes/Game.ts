@@ -4,30 +4,51 @@ import { AntiVirus } from '../entities/AntiVirus'
 
 import { PaintWindow } from '../entities/PaintWindow'
 import { x, y, w, h } from '../constants'
+import { Tacky } from '../entities/Tacky'
 
 export class Game extends Scene {
   antivirus: AntiVirus
   paint: PaintWindow
-  text: Phaser.GameObjects.BitmapText
+  tacky: Tacky
+
   constructor() {
     super('Game')
   }
 
   create() {
     this.cameras.main.setRoundPixels(false)
-    this.text = this.add.bitmapText(260, 180, 'clarity', 'Welcome', 8)
+
     this.data.set('wave', 0)
     this.data.set('level', 0)
     this.createAnimations()
 
+    this.tacky = new Tacky(this)
+
     new Icon(this, 5, 5, () => {
       new PaintWindow(this, x, y, w, h)
     })
+
     new Icon(this, 5, 25, () => {
       // TODO: why do i need to open a paint window here?
       new PaintWindow(this, x, y, w, h)
       this.antivirus = new AntiVirus(this)
     })
+
+    this.runIntro()
+  }
+
+  async runIntro() {
+    await this.tacky.say('Welcome!')
+    await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    await this.tacky.say('Open paint and draw me a picture!')
+    // clippy says "Welcome"
+    // clippy says "Open paint and draw me a picture!"
+    // clippy waits until you open paint
+    // clippy waits 90 seconds
+    // alert opens, says "Last PaintUI Virus scan was 90 days ago"
+    // clippy says "its supposed to do that!"
+    // clippy waits until player clicks "Delete viruses"
+    // Game switches to anti virus mode
   }
 
   createAnimations() {
@@ -41,6 +62,24 @@ export class Game extends Scene {
         }),
       })
     }
+
+    this.anims.create({
+      key: `tacky`,
+      frameRate: 2,
+      repeat: -1,
+      frames: this.anims.generateFrameNumbers('tacky', {
+        frames: [0, 1],
+      }),
+    })
+
+    this.anims.create({
+      key: `tacky-idle`,
+      frameRate: 2,
+      repeat: -1,
+      frames: this.anims.generateFrameNumbers('tacky', {
+        frames: [0],
+      }),
+    })
 
     this.anims.create({
       key: `explode`,

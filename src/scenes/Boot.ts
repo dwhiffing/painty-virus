@@ -18,6 +18,10 @@ export class Boot extends Scene {
   preload() {
     this.load.image('icon', 'favicon.png')
     this.load.setPath('assets')
+    this.load.spritesheet('tacky', 'tacky.png', {
+      frameHeight: 40,
+      frameWidth: 30,
+    })
     this.load.spritesheet('icons', 'icons.png', {
       frameHeight: 16,
       frameWidth: 16,
