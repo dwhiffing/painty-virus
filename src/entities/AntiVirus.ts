@@ -54,7 +54,7 @@ export class AntiVirus {
 
     this.scene.data.set('toolIndex', 0)
     this.scene.data.set('foregroundColor', 0)
-    this.scene.input.on('pointerup', (p: Phaser.Input.Pointer) => {
+    this.scene.input.on('pointerup', () => {
       const toolIndex = this.scene.data.get('toolIndex')
       const start = this.scene.data.get('linestart')
       lineGraphics.clear()
@@ -232,7 +232,7 @@ export class AntiVirus {
     nextEnemy()
     if (this.wave.enemies.length > 1)
       this.scene.time.addEvent({
-        delay: this.wave.speed,
+        delay: 2000 - 250 * this.scene.data.get('level'),
         repeat: this.wave.enemies.length - 1,
         callback: nextEnemy,
       })

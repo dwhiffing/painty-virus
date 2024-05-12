@@ -5,40 +5,58 @@ export const h = 180
 
 export const ENEMY_TYPES = [
   { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
-  { type: 'tough', frame: 0, health: 20, speed: -20, size: 4 },
+  { type: 'tough', frame: 0, health: 15, speed: -20, size: 4 },
   { type: 'quick', frame: 3, health: 5, speed: 8, size: 4 },
-  { type: 'boss', frame: 6, health: 5, speed: -50, size: 4 },
+  { type: 'boss', frame: 6, health: 60, speed: -50, size: 4 },
   // TODO: implement thief behaviour
-  { type: 'thief', frame: 4, health: 5, speed: 4, size: 4 },
-  // TODO: implement spawning behaviour
+  // { type: 'thief', frame: 4, health: 5, speed: 4, size: 4 },
   // TODO: implement cluster behaviour
-  { type: 'cluster', frame: 5, health: 5, speed: 2, size: 4 },
+  // { type: 'cluster', frame: 5, health: 5, speed: 2, size: 4 },
   // TODO: implement support behaviour
-  { type: 'support', frame: 1, health: 5, speed: 4, size: 4 },
+  // { type: 'support', frame: 1, health: 5, speed: 4, size: 4 },
 ]
 
 const COLORS = [0x000000, 0xff0000, 0x00ff00, 0x0000ff]
 
-const e = (type: number, color: number) => ({
-  type,
-  color: COLORS[color],
-})
+const e = (type: number) => ({ type, color: COLORS[type] })
 
 export const LEVELS = [
-  [{ speed: 1500, enemies: [e(0, 0)] }],
+  // level 1
   [
-    {
-      speed: 1500,
-      enemies: [e(0, 0), e(0, 0), e(0, 0), e(1, 1), e(2, 2)],
-    },
+    [0],
+    [0, 0],
+    [0, 0, 0],
+    // end
   ],
+  // level 2
   [
-    {
-      speed: 1500,
-      enemies: [e(3, 3)],
-    },
+    [1],
+    [1, 0, 0],
+    [1, 0, 0, 0, 0],
+    // end
   ],
-]
+  // level 3
+  [
+    [2],
+    [0, 0, 2, 0, 0],
+    [1, 0, 0, 2, 0],
+    // end
+  ],
+  // level 4
+  [
+    [1, 0, 1, 0, 0, 0],
+    [1, 2, 1, 2],
+    [1, 2, 1, 2, 1, 2],
+    // end
+  ],
+  // level 5
+  [
+    [3, 0, 0, 0, 0],
+    [3, 1, 0, 1, 0],
+    [3, 1, 2, 1, 2, 3],
+    // end
+  ],
+].map((l) => l.map((w) => ({ enemies: w.map(e) })))
 
 export interface Weapon {
   maxAmmo: number // max number of bullets stored, -1 means infinite
@@ -97,8 +115,8 @@ export const INITIAL_WEAPONS = [
 
   // line
   {
-    maxAmmo: 9,
-    ammo: 9,
+    maxAmmo: 5,
+    ammo: 5,
     reloadRate: 50,
     reloadTiming: 50,
     fireRate: 2,
@@ -115,8 +133,8 @@ export const INITIAL_WEAPONS = [
 
   // brush
   {
-    maxAmmo: 5,
-    ammo: 5,
+    maxAmmo: 3,
+    ammo: 3,
     reloadRate: 100,
     reloadTiming: 100,
     fireRate: 10,
