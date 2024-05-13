@@ -55,6 +55,8 @@ export class PaintWindow {
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
       if (!isInCanvas(p) || this.scene.antivirus) return
 
+      this.scene.data.set('drewapicture', true)
+
       this.paintGraphics.beginPath()
 
       if (this.scene.data.get('toolIndex') === 2 && !activeLine.active) {

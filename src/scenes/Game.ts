@@ -6,8 +6,10 @@ import { PaintWindow } from '../entities/PaintWindow'
 import { x, y, w, h } from '../constants'
 import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
+import { Enemy } from '../entities/Enemy'
 
-const DEBUG = false
+const SKIP_MENU = false
+const SKIP_DESKTOP = false
 const TIMESCALE = 1
 
 export class Game extends Scene {
@@ -39,6 +41,9 @@ export class Game extends Scene {
     this.aboutAlert = new Alert(this, 'about')
 
     const title = this.add.image(160, 100, 'title').setAlpha(0)
+    const clickToStart = this.add
+      .bitmapText(117, 150, 'clarity', 'Click to start', 8)
+      .setAlpha(0)
 
     this.time.addEvent({
       delay: 500,
@@ -52,29 +57,48 @@ export class Game extends Scene {
     this.tweens.timeScale = TIMESCALE
     this.time.timeScale = TIMESCALE
 
-    if (DEBUG) {
+    this.input.on('pointerdown', () =>
+      this.sound.play('mouse-click', { rate: 1.5 + Phaser.Math.RND.frac() }),
+    )
+
+    if (SKIP_MENU) {
       this.showDesktop()
     } else {
       this.tweens.addCounter({
         from: 0,
         to: 10,
-        delay: 500,
+        delay: 800,
         ease: Phaser.Math.Easing.Quadratic.In,
         duration: 2000,
-        onUpdate: (_, b) => {
-          title.setAlpha(Math.floor(b.value) / 10)
-        },
-        onComplete: () => {
+        onUpdate: (_, b) => title.setAlpha(Math.floor(b.value) / 10),
+        onComplete: async () => {
+          const blink = this.tweens.addCounter({
+            from: 1,
+            to: 0,
+            repeat: -1,
+            onUpdate: (_, b) =>
+              clickToStart.setAlpha(Math.round(b.value) + 0.3),
+          })
+
+          await new Promise((resolve) => {
+            this.input.on('pointerdown', resolve)
+          })
+
+          blink.destroy()
+          clickToStart.setAlpha(1)
+
           this.tweens.addCounter({
             from: 10,
             to: 0,
-            delay: 1000,
+            delay: 0,
             ease: Phaser.Math.Easing.Quadratic.In,
-            duration: 2000,
+            duration: 1500,
             onUpdate: (_, b) => {
+              clickToStart.setAlpha(Math.floor(b.value) / 10)
               title.setAlpha(Math.floor(b.value) / 10)
             },
             onComplete: () => {
+              clickToStart.destroy()
               this.showDesktop()
             },
           })
@@ -88,8 +112,11 @@ export class Game extends Scene {
       this.aboutAlert.show()
     })
 
-    if (!DEBUG)
+    if (!SKIP_DESKTOP) {
+      this.sound.play('startup', { volume: 0.6, rate: 1 })
+
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    }
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
       if (!this.aboutAlert.open && !this.paint) {
@@ -98,22 +125,25 @@ export class Game extends Scene {
       }
     })
 
-    if (!DEBUG)
+    if (!SKIP_DESKTOP)
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     this.tacky = new Tacky(this)
 
-    if (!DEBUG)
+    if (!SKIP_DESKTOP)
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
     this.runIntro()
   }
 
   async runIntro() {
-    if (!DEBUG) {
+    if (!SKIP_DESKTOP) {
       await this.tacky.say('Welcome!')
+      await this.tacky.say('My name is Tacky.')
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
-      await this.tacky.say('Open paint and draw me a picture!')
+      await this.tacky.say(
+        "To get to know each other, why don't you Open painty and draw me a picture?",
+      )
 
       if (!this.paint) {
         await new Promise((resolve) => {
@@ -121,21 +151,34 @@ export class Game extends Scene {
         })
       }
 
-      await new Promise((resolve) => this.time.delayedCall(15000, resolve))
+      await this.tacky.say(
+        'Make sure you try all the different colors and tools!',
+      )
 
+      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+
+      await this.tacky.say(
+        this.data.get('drewapicture')
+          ? "Wow, that's really coming along!"
+          : "It looks like you haven't started your painting yet.  Would you like some help with that?",
+      )
+
+      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+
+      this.sound.play('alert')
       this.virusAlert.show()
 
       await new Promise((resolve) => this.time.delayedCall(2000, resolve))
 
-      await this.tacky.say('Oh, looks like we need to remove some viruses')
+      await this.tacky.say('Oh, looks like painty detected some viruses')
 
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
-      await this.tacky.say(
-        'Are you surprised? This is blundersoft painty-virus!',
-      )
+      await this.tacky.say('Are you surprised?')
+
+      await this.tacky.say('This is blundersoft painty-virus!')
       await new Promise((resolve) => this.time.delayedCall(500, resolve))
-      await this.tacky.say('Its supposed to do that!')
+      await this.tacky.say("It's supposed to do that!")
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
 
       this.events.emit('virusalertshowbutton')
@@ -146,7 +189,7 @@ export class Game extends Scene {
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
     }
 
-    if (DEBUG) {
+    if (SKIP_DESKTOP) {
       this.paint = new PaintWindow(this, x, y, w, h)
     }
 
@@ -196,22 +239,45 @@ export class Game extends Scene {
   }
 
   async loseLife() {
-    if (this.data.get('gameovered') || this.data.get('lives') === 0) return
+    if (this.data.get('gameovered')) return
 
     this.data.set('lives', this.data.get('lives') - 1)
 
-    if (this.data.get('lives') <= 0) {
+    const lives = this.data.get('lives')
+
+    if (lives < 0) {
       this.gameover()
     } else {
-      await this.tacky.say(`whoops!\n${this.data.get('lives')} lives left`)
+      await this.tacky.say(`whoops!`, 1000)
+      await this.tacky.say(
+        `${lives} ${lives === 1 ? 'life' : 'lives'} left`,
+        1500,
+      )
       this.antivirus.checkNextWave()
     }
   }
 
-  gameover() {
+  async gameover() {
     if (this.data.get('gameovered')) return
 
     this.data.set('gameovered', true)
+
+    this.sound.play('shutdown')
+    const black = this.add
+      .graphics()
+      .fillStyle(0x000000)
+      .fillRect(0, 0, 320, 200)
+      .setDepth(99997)
+      .setAlpha(0)
+
+    const enemies = this.antivirus.enemies.getChildren() as Enemy[]
+    enemies.forEach((c) => {
+      c.stunned = true
+    })
+    this.tweens.add({ targets: black, alpha: 1 })
+
+    await new Promise((resolve) => this.time.delayedCall(3000, resolve))
+    this.sound.play('bsod')
 
     this.add
       .graphics()
@@ -224,7 +290,7 @@ export class Game extends Scene {
         160,
         100,
         'clarity',
-        'An Error has occured!\n\n\n\nError: 0E : 06F : GAMEOVER\n\n\n\n\nPress any key to continue...',
+        'An Error has occured!\n\n\n\nError: 0E : 06F : GAMEOVER\n\n\n\n\nClick to continue...',
         8,
       )
       .setDepth(99999)

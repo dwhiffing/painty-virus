@@ -77,7 +77,7 @@ export class Alert {
           x + 50,
           y + 30,
           'clarity',
-          'Last Virus scan was 99999 days ago',
+          'Warning: Last scan found 999,999 viruses!',
           8,
         )
         .setTint(0x000000)

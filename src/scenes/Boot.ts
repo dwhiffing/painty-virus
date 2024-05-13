@@ -18,6 +18,14 @@ export class Boot extends Scene {
   preload() {
     this.load.image('icon', 'favicon.png')
     this.load.setPath('assets')
+
+    this.load.audio('startup', 'startup.wav')
+    this.load.audio('alert', 'sfx/alert.wav')
+    this.load.audio('bsod', 'sfx/bsod.wav')
+    this.load.audio('mouse-click', 'sfx/mouse-click.wav')
+    this.load.audio('shutdown', 'sfx/shutdown.wav')
+    this.load.audio('talk', 'sfx/talk.wav')
+
     this.load.image('goat', 'goat.png')
     this.load.image('alert', 'alert.png')
     this.load.image('title', 'title.png')
