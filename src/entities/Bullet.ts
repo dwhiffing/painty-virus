@@ -1,4 +1,4 @@
-import { Weapon, h, w, x, y } from '../constants'
+import { INITIAL_WEAPONS, Weapon, h, w, x, y } from '../constants'
 import { Game } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
@@ -18,6 +18,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   explodeCircle: Phaser.GameObjects.Arc
   maxLifetime: number
   setupTime: number
+  maxSetupTime: number
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     this._scene = scene
@@ -44,6 +45,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.setAlpha(0.5)
       this.setupTime--
     } else if (this.alpha !== 1) {
+      if (this.maxSetupTime > 0) this.scene.sound.play('talk', { rate: 0.5 })
       this.setAlpha(1)
     }
 
@@ -87,6 +89,16 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       targets: this.explodeCircle,
       alpha: 0,
     })
+
+    if (this.explodeRadius === INITIAL_WEAPONS[3].explodeRadius) {
+      this.scene.sound.play('mine-explode', {
+        rate: 0.8 + Phaser.Math.RND.frac() / 4,
+      })
+    } else if (this.explodeRadius > 0) {
+      this.scene.sound.play('bullet-explode', {
+        rate: 0.8 + Phaser.Math.RND.frac() / 4,
+      })
+    }
     const closeEnough = enemies.filter((e) => {
       if (!e.active) return false
 
@@ -96,7 +108,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       )
     })
 
-    closeEnough.forEach((e) => e.damage(this.explodeDamage || this.damage))
+    this.scene.time.delayedCall(150, () => {
+      closeEnough.forEach((e) => e.damage(this.explodeDamage || this.damage))
+    })
   }
 
   moveToward(
@@ -113,6 +127,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.maxShootTime = options.shootTime ?? 0
     this.shootTime = options.shootTime ?? 0
     this.setupTime = options.setupTime
+    this.maxSetupTime = options.setupTime
     this.explodeRadius = options.explodeRadius
     this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime

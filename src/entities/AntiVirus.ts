@@ -64,7 +64,14 @@ export class AntiVirus {
       toolIndex === 2 ||
       ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 30)
     ) {
-      if ((toolIndex === 3 || toolIndex === 4) && distanceToCenter < 30) {
+      const closeToCenter =
+        (toolIndex === 3 || toolIndex === 4) && distanceToCenter < 30
+      if (toolIndex !== 0 && (closeToCenter || activeWeapon.ammo <= 0)) {
+        this.scene.sound.play('disabled', {
+          rate: 2 + Phaser.Math.RND.frac() / 4,
+        })
+      }
+      if (closeToCenter) {
         this.scene.tacky.say('too close to center!')
       }
       return
@@ -81,6 +88,26 @@ export class AntiVirus {
       },
       activeWeapon,
     )
+
+    if (bullet) {
+      if (toolIndex === 0) {
+        this.scene.sound.play('mouse-click', {
+          rate: 0.1 + Phaser.Math.RND.frac() / 2,
+        })
+      } else if (toolIndex === 1) {
+        this.scene.sound.play('shoot-eraser', {
+          rate: 0.7 + Phaser.Math.RND.frac() / 2,
+        })
+      } else if (toolIndex === 3 || toolIndex === 4) {
+        this.scene.sound.play('mine-place', {
+          rate: 0.7 + Phaser.Math.RND.frac() / 2,
+        })
+      } else if (toolIndex === 5) {
+        this.scene.sound.play('shoot-bucket', {
+          rate: 0.7 + Phaser.Math.RND.frac() / 2,
+        })
+      }
+    }
 
     this.scene.events.emit('updateammo')
   }
@@ -109,10 +136,13 @@ export class AntiVirus {
       activeWeapon.fireTiming = activeWeapon.fireRate
       const bullet = this.bullets.get(start.x, start.y) as Bullet
 
-      activeWeapon.speed = this.scene.data.get('linedist') * 4
-      activeWeapon.explodeRadius = this.scene.data.get('linedist')
+      activeWeapon.speed = this.scene.data.get('linedist') * 5
+      activeWeapon.explodeRadius = this.scene.data.get('linedist') * 1.5
 
       bullet?.moveToward(this.scene.data.get('lineangle'), activeWeapon)
+      if (bullet) {
+        this.scene.sound.play('shoot-line', { volume: 0.7, rate: 0.4 })
+      }
 
       this.scene.events.emit('updateammo')
       this.scene.data.set('linestart', undefined)
@@ -224,6 +254,24 @@ export class AntiVirus {
       const enemy = this.wave?.enemies[this.scene.data.get('enemyIndex')]
       if (enemy) {
         this.scene.data.inc('enemyIndex')
+        if (enemy.type === 0) {
+          this.scene.sound.play('enemy-spawn', {
+            rate: 1.5 + Phaser.Math.RND.frac() / 8,
+          })
+        } else if (enemy.type === 1) {
+          this.scene.sound.play('enemy-spawn2', {
+            rate: 0.2 + Phaser.Math.RND.frac() / 8,
+          })
+        } else if (enemy.type === 2) {
+          this.scene.sound.play('enemy-spawn3', {
+            rate: 0.5 + Phaser.Math.RND.frac() / 8,
+          })
+        } else if (enemy.type === 3) {
+          this.scene.sound.play('boss-spawn', {
+            volume: 0.3,
+            rate: 0.9 + Phaser.Math.RND.frac() / 8,
+          })
+        }
         this.enemies.get(160, 100)?.reset(enemy.type, enemy.color)
       }
     }
@@ -250,6 +298,7 @@ export class AntiVirus {
         })
 
     if (!level) {
+      this.scene.sound.play('startup')
       this.scene.tacky.say('You win', Infinity)
       return
     }
@@ -272,6 +321,9 @@ export class AntiVirus {
         b.shootTime = b.maxShootTime
         const closest = this.getClosestEnemyTo(b)
         const bullet = this.bullets.get(b.x, b.y) as Bullet
+        this.scene.sound.play('mouse-click', {
+          rate: 0.05 + Phaser.Math.RND.frac() / 4,
+        })
         const activeWeapon = { ...INITIAL_WEAPONS[0], speed: 100 }
         bullet?.moveToward(
           closest?.getCenter() ?? {

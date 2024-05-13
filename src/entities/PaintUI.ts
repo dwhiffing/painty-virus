@@ -21,9 +21,7 @@ export class PaintUI {
       .fillStyle(526459)
       .fillRect(x + 1, y + 2, w - 3, 10)
       .lineBetween(x, y + 13, w + x, y + 13)
-    this.scene.add
-      .bitmapText(x + 3, y + 1, 'clarity', 'PaintUI', 8)
-      .setDepth(10)
+    this.scene.add.bitmapText(x + 3, y + 1, 'clarity', 'Painty', 8).setDepth(10)
 
     // weapon bar
     graphics

@@ -50,7 +50,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       },
     })
 
-    let timeout = _timeout ?? 2000 + text.length * 80
+    let timeout = _timeout ?? 1500 + text.length * 80
 
     return new Promise((resolve) => {
       this.scene.time.delayedCall(timeout, () => {

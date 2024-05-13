@@ -5,6 +5,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
   _angle: number
   health: number
+  maxHealth: number
   speed: number
   color: number
   dying: boolean
@@ -42,6 +43,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   reset(type = 0, color = 0x00ff00) {
     const enemyType = ENEMY_TYPES[type]
     this.health = enemyType.health
+    this.maxHealth = enemyType.health
     this.color = color
     this.speed = enemyType.speed
     this.setTintFill(this.color)
@@ -55,11 +57,16 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   }
 
   damage(amount: number) {
+    if (this.health <= 0) return
     this.health -= amount
 
     this.setTintFill(0x999999)
     this.stunned = true
 
+    this.scene.sound.play('enemy-hit', {
+      rate: 1.5 + Phaser.Math.RND.frac() * 2,
+      volume: 0.1 + Phaser.Math.RND.frac() / 4,
+    })
     this.scene.time.delayedCall(300, () => {
       this.setTintFill(this.color)
       this.stunned = false
@@ -69,6 +76,18 @@ export class Enemy extends Phaser.GameObjects.Sprite {
       this.dying = true
       this.setTintFill(0x000000)
       this.play('explode')
+
+      if (this.maxHealth === ENEMY_TYPES[3].health) {
+        this.scene.sound.play('boss-dead', {
+          volume: 0.4 + Phaser.Math.RND.frac() / 4,
+          rate: 0.5 + Phaser.Math.RND.frac(),
+        })
+      } else {
+        this.scene.sound.play('enemy-dead', {
+          volume: 0.4 + Phaser.Math.RND.frac() / 4,
+          rate: 0.5 + Phaser.Math.RND.frac(),
+        })
+      }
       this.scene.time.delayedCall(500, () => {
         this.setActive(false).setVisible(false)
         this._scene.antivirus.checkNextWave()

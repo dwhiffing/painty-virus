@@ -151,11 +151,13 @@ export class Game extends Scene {
         })
       }
 
+      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+
       await this.tacky.say(
         'Make sure you try all the different colors and tools!',
       )
 
-      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+      await new Promise((resolve) => this.time.delayedCall(10000, resolve))
 
       await this.tacky.say(
         this.data.get('drewapicture')
@@ -163,7 +165,7 @@ export class Game extends Scene {
           : "It looks like you haven't started your painting yet.  Would you like some help with that?",
       )
 
-      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+      await new Promise((resolve) => this.time.delayedCall(10000, resolve))
 
       this.sound.play('alert')
       this.virusAlert.show()
@@ -180,6 +182,13 @@ export class Game extends Scene {
       await new Promise((resolve) => this.time.delayedCall(500, resolve))
       await this.tacky.say("It's supposed to do that!")
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+
+      await this.tacky.say(
+        'Use the different paint tools to eliminate the viruses.',
+      )
+      await this.tacky.say(
+        'Be sure not to let them out of the canvas, I can only handle a few escapees...',
+      )
 
       this.events.emit('virusalertshowbutton')
 
@@ -242,12 +251,13 @@ export class Game extends Scene {
     if (this.data.get('gameovered')) return
 
     this.data.set('lives', this.data.get('lives') - 1)
-
     const lives = this.data.get('lives')
 
     if (lives < 0) {
       this.gameover()
     } else {
+      this.sound.play('lose-life', { rate: 1.3, volume: 0.6 })
+      await new Promise((resolve) => this.time.delayedCall(300, resolve))
       await this.tacky.say(`whoops!`, 1000)
       await this.tacky.say(
         `${lives} ${lives === 1 ? 'life' : 'lives'} left`,
