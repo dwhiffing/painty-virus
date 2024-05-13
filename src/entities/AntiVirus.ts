@@ -289,6 +289,8 @@ export class AntiVirus {
     this.scene.data.inc('level')
     this.scene.data.set('wave', 0)
 
+    this.scene.sound.play('next-level', { rate: 0.7 })
+
     const level = LEVELS[this.scene.data.get('level')]
     if (level)
       this.scene.tacky

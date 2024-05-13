@@ -40,6 +40,7 @@ export class Boot extends Scene {
     this.load.audio('mine-place', 'sfx/mine-place.wav')
     this.load.audio('mine-explode', 'sfx/mine-explode.wav')
     this.load.audio('lose-life', 'sfx/lose-life.wav')
+    this.load.audio('next-level', 'sfx/next-level.wav')
 
     this.load.image('goat', 'goat.png')
     this.load.image('alert', 'alert.png')
