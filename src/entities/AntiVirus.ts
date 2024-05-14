@@ -43,9 +43,9 @@ export class AntiVirus {
 
     this.setupWeapons()
 
-    this.scene.tacky.say(`Level 1`).then(() => {
-      this.nextWave()
-    })
+    this.scene.tacky
+      .say(`Level ${this.scene.data.get('level') + 1}`)
+      .then(() => this.nextWave())
   }
 
   shootActiveWeapon() {
@@ -283,7 +283,7 @@ export class AntiVirus {
     nextEnemy()
     if (this.wave.enemies.length > 1)
       this.scene.time.addEvent({
-        delay: 2000 - 250 * this.scene.data.get('level'),
+        delay: 2000 - 200 * this.scene.data.get('level'),
         repeat: this.wave.enemies.length - 1,
         callback: nextEnemy,
       })
