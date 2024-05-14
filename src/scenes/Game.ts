@@ -8,8 +8,8 @@ import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 import { Enemy } from '../entities/Enemy'
 
-const SKIP_MENU = false
-const SKIP_DESKTOP = false
+const SKIP_MENU = true
+let SKIP_DESKTOP = false
 const TIMESCALE = 1
 
 export class Game extends Scene {
@@ -121,6 +121,8 @@ export class Game extends Scene {
     }
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
+      SKIP_DESKTOP = true
+
       if (!this.aboutAlert.open && !this.paint) {
         this.paint = new PaintWindow(this, x, y, w, h)
         this.events.emit('paintopened')
@@ -143,6 +145,8 @@ export class Game extends Scene {
       await this.tacky.say('Welcome!')
       await this.tacky.say('My name is Tacky.')
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    }
+    if (!SKIP_DESKTOP) {
       await this.tacky.say(
         "To get to know each other, why don't you Open painty and draw me a picture?",
       )
