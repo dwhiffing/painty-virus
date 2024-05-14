@@ -82,7 +82,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   }
 
   kill() {
-    this.setVisible(false).setActive(false).setPosition(-10, -10)
+    this.setVisible(false).setActive(false)
     this._body.setVelocity(0)
     const enemies = this._scene.antivirus.enemies.getChildren() as Enemy[]
 
@@ -120,6 +120,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     const damage = this.explodeDamage || this.damage
 
+    this.setPosition(-10, -10)
     this.scene.time.delayedCall(150, () => {
       closeEnough.forEach((e) => e.damage(damage))
     })
