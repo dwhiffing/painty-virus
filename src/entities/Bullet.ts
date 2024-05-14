@@ -82,7 +82,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   }
 
   kill() {
-    this.setVisible(false).setActive(false)
+    this.setVisible(false).setActive(false).setPosition(-10, -10)
+    this._body.setVelocity(0)
     const enemies = this._scene.antivirus.enemies.getChildren() as Enemy[]
 
     if (this.explodeTween) this.explodeTween.destroy()
@@ -143,18 +144,18 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime
     this.hitEnemies = []
+    const isMine = this.maxSetupTime === INITIAL_WEAPONS[3].setupTime
+
     if (!options.isFromTower)
       this.setFillStyle(this.scene.data.get('foregroundColor'))
 
-    if (this.isTower || this.maxSetupTime === INITIAL_WEAPONS[3].setupTime) {
+    if (this.isTower || isMine) {
       this.image.x = Math.round(this.x)
       this.image.y = Math.round(this.y)
 
-      this.image.setTexture(
-        this.maxSetupTime === INITIAL_WEAPONS[3].setupTime ? 'mine' : 'spray',
-      )
+      this.image.setTexture(isMine ? 'mine' : 'spray')
 
-      if (this.maxSetupTime === INITIAL_WEAPONS[3].setupTime) {
+      if (isMine) {
         this.image.setTexture('mine')
         this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(0.3)
@@ -167,7 +168,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     }
 
     const size = options.bodySize ?? options.bulletSize
-    this._body.setSize(size, size)
+    let offset = 0
+    if (this.isTower || isMine) offset = -size / 2
+    this._body.setCircle(size / 2, offset, offset)
+    this._body.isCircle = true
     this.setVisible(true).setActive(true)
     const ang =
       typeof p === 'number'
