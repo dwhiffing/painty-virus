@@ -1,7 +1,7 @@
 import { Game } from '../scenes/Game'
 
 const COLORS = [
-  0x000000, 0xff0000, 0x00ff00, 0x0000ff, 0xffff00, 0x00ffff, 0xff00ff,
+  0x000000, 0xea3323, 0x75fb4c, 0x0000f5, 0xffff54, 0xea33f7, 0x75fbfd,
 ]
 export class PaintUI {
   scene: Game
@@ -126,19 +126,45 @@ export class PaintUI {
 
     const rectangles: Phaser.GameObjects.Rectangle[] = [
       this.scene.add
-        .rectangle(x + w - 25, 28, 20, 20, 0x000000)
+        .rectangle(x + w - 25 + 1, 28 + 1, 18, 18, 0x000000)
         .setOrigin(0, 0)
         .setDepth(10),
+      this.scene.add
+        .rectangle(x + w - 25, 28, 20, 20, 0xaaaaaa)
+        .setOrigin(0, 0)
+        .setDepth(9),
     ]
+
+    const borderRectangles2: Phaser.GameObjects.Rectangle[] = []
+
+    this.scene.events.on('changedata', (_: any, key: string, value: any) => {
+      if (key === 'foregroundColor') {
+        const index = COLORS.indexOf(value)
+        rectangles2.forEach((r) => r.setFillStyle(0xffffff))
+        rectangles2[index].setFillStyle(0xffffff)
+        borderRectangles2.forEach((r) => r.setFillStyle(0xaaaaaa))
+        borderRectangles2[index].setFillStyle(0xffffff)
+      }
+    })
 
     // color buttons
     for (let i = 1; i < 8; i++) {
-      const rectangle = this.scene.add
+      const rectangle2 = this.scene.add
         .rectangle(
           x + w - 25 + (i === 0 ? 0 : 3),
           i === 0 ? 28 : 34 + i * 17,
-          i === 0 ? 20 : 14,
-          i === 0 ? 20 : 14,
+          i === 0 ? 30 : 15,
+          i === 0 ? 30 : 15,
+          0xffffff,
+        )
+        .setOrigin(0, 0)
+        .setDepth(10)
+      const rectangle = this.scene.add
+        .rectangle(
+          x + w - 25 + (i === 0 ? 0 : 3) + 1,
+          i === 0 ? 28 : 34 + i * 17 + 1,
+          i === 0 ? 20 : 13,
+          i === 0 ? 20 : 13,
           COLORS[i - 1],
         )
         .setOrigin(0, 0)
@@ -150,6 +176,7 @@ export class PaintUI {
         })
 
       rectangles.push(rectangle)
+      borderRectangles2.push(rectangle2)
     }
   }
 }
