@@ -32,11 +32,12 @@ export class PaintUI {
     const rectangles2: Phaser.GameObjects.Rectangle[] = []
     const reloadRectangles: Phaser.GameObjects.Rectangle[] = []
     const weaponAmmo: Phaser.GameObjects.Rectangle[][] = []
+    const weaponAmmoMax: Phaser.GameObjects.Rectangle[][] = []
 
     this.scene.events.on('changedata', (_: any, key: string, value: any) => {
       if (key === 'toolIndex') {
         rectangles2.forEach((r) => r.setFillStyle(0xffffff))
-        const rectangle = rectangles2[value]
+        rectangles2[value].setFillStyle(0xdddddd)
 
         rectangle.setFillStyle(0xaaaaaa)
       }
@@ -59,7 +60,7 @@ export class PaintUI {
       rectangles2.push(rectangle)
 
       const reloadRectangle = this.scene.add
-        .rectangle(x + 4, 48 + i * 25, 20, 0, 0x888888)
+        .rectangle(x + 4, 48 + i * 25, 20, 0, 0xaaaaaa)
         .setOrigin(0, 1)
         .setDepth(11)
 
@@ -73,15 +74,22 @@ export class PaintUI {
       reloadRectangles.push(reloadRectangle)
 
       weaponAmmo.push([])
+      weaponAmmoMax.push([])
 
       for (let j = 0; j < 9; j++) {
+        const rectangle2 = this.scene.add
+          .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x999999)
+          .setOrigin(0, 0)
+          .setAlpha(0)
+          .setDepth(10)
         const rectangle = this.scene.add
-          .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x444444)
+          .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x000000)
           .setOrigin(0, 0)
           .setAlpha(0)
           .setDepth(10)
 
         weaponAmmo[i].push(rectangle)
+        weaponAmmoMax[i].push(rectangle2)
       }
     }
 
@@ -92,6 +100,10 @@ export class PaintUI {
 
         weaponAmmo[i].forEach((r, j) => {
           r.setAlpha(w.ammo > j ? 1 : 0)
+        })
+
+        weaponAmmoMax[i].forEach((r, j) => {
+          r.setAlpha(w.maxAmmo > j ? 1 : 0)
         })
       })
     })
