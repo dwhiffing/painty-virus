@@ -175,8 +175,8 @@ export const INITIAL_WEAPONS = [
   {
     maxAmmo: 1,
     ammo: 1,
-    reloadRate: 500,
-    reloadTiming: 500,
+    reloadRate: 800,
+    reloadTiming: 800,
     fireRate: 20,
     speed: 0,
     fireTiming: 0,
