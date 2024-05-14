@@ -70,7 +70,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     if (!this.stunned) {
       this.setTintFill(0x999999)
       this.stunned = true
-      this.scene.time.delayedCall(200 + amount * 50, () => {
+      this.scene.time.delayedCall(Math.min(500, 200 + amount * 30), () => {
         this.setTintFill(this.color)
         this.stunned = false
       })
