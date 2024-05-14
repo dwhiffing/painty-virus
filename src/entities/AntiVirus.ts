@@ -311,7 +311,8 @@ export class AntiVirus {
   update() {
     if (
       this.scene.input.activePointer.isDown &&
-      this.scene.data.get('toolIndex') === 0
+      this.scene.data.get('toolIndex') === 0 &&
+      getInBounds(this.scene.input.activePointer.position)
     ) {
       this.shootActiveWeapon()
     }
