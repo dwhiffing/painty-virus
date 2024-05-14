@@ -122,14 +122,14 @@ export const INITIAL_WEAPONS = [
 
   // line
   {
-    maxAmmo: 5,
-    ammo: 5,
-    reloadRate: 80,
-    reloadTiming: 80,
+    maxAmmo: 6,
+    ammo: 6,
+    reloadRate: 70,
+    reloadTiming: 70,
     fireRate: 2,
     speed: 10,
     fireTiming: 0,
-    lifetime: 55,
+    lifetime: 48,
     health: 10,
     bulletSize: 3,
     damage: 0,
