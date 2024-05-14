@@ -15,7 +15,16 @@ export class PaintWindow {
     new PaintUI(this.scene, x, y, w, h)
 
     const paintContainer = this.scene.add.graphics().setDepth(3)
-    this.paintGraphics = this.scene.add.graphics().setDepth(4)
+    this.paintGraphics = this.scene.add
+      .graphics()
+      .setDepth(4)
+      .setMask(
+        this.scene.add
+          .rectangle(x + 29, y + 16, w - 59, h - 18, 0x000000)
+          .setOrigin(0)
+          .setVisible(false)
+          .createGeometryMask(),
+      )
     const linePreview = this.scene.add.graphics().setDepth(4)
 
     let activeSpray = { active: false, x: 0, y: 0 }

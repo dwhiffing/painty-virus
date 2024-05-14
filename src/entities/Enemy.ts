@@ -20,6 +20,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.color = 0xff0000
     this.dying = false
     scene.physics.add.existing(this)
+    this.setMask(this._scene.antivirus.mask)
 
     this.scene.time.addEvent({
       callback: () => {
