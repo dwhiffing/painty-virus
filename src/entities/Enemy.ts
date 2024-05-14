@@ -52,6 +52,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = 10 - this.speed
     this.dying = false
+    this.stunned = false
     this.setVisible(true)
     this.setActive(true)
     this._body.setSize(enemyType.size, enemyType.size)
@@ -69,7 +70,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     if (!this.stunned) {
       this.setTintFill(0x999999)
       this.stunned = true
-      this.scene.time.delayedCall(150 + amount * 150, () => {
+      this.scene.time.delayedCall(200 + amount * 50, () => {
         this.setTintFill(this.color)
         this.stunned = false
       })
