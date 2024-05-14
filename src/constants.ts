@@ -153,16 +153,16 @@ export const INITIAL_WEAPONS = [
 
   // spray
   {
-    maxAmmo: 1,
-    ammo: 1,
-    reloadRate: 300,
-    reloadTiming: 300,
-    fireRate: 10,
+    maxAmmo: 2,
+    ammo: 2,
+    reloadRate: 225,
+    reloadTiming: 225,
+    fireRate: 6,
     speed: 0,
     fireTiming: 0,
-    lifetime: 3333,
+    lifetime: 2000,
     health: 0,
-    bodySize: 60,
+    bodySize: 65,
     bulletSize: 0,
     damage: 0,
     explodeRadius: 0,

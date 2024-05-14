@@ -336,7 +336,7 @@ export class AntiVirus {
         const activeWeapon = {
           ...INITIAL_WEAPONS[0],
           speed: 100,
-          damage: 0.2,
+          damage: 0.33,
           firerate: 1,
           lifetime: 40,
           bulletSize: 1,
