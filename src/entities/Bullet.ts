@@ -10,6 +10,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   lifetime: number
   speed: number
   isTower: boolean
+  isMine: boolean
   shootTime: number
   maxShootTime: number
   explodeRadius: number
@@ -125,7 +126,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     const damage = this.explodeDamage || this.damage
 
     this.setPosition(-10, -10)
-    this.scene.time.delayedCall(250, () => {
+    this.scene.time.delayedCall(this.isMine ? 350 : 100, () => {
       closeEnough.forEach((e) => e.damage(damage))
     })
   }
@@ -149,18 +150,18 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime
     this.hitEnemies = []
-    const isMine = this.maxSetupTime === INITIAL_WEAPONS[3].setupTime
+    this.isMine = this.maxSetupTime === INITIAL_WEAPONS[3].setupTime
 
     if (!options.isFromTower)
       this.setFillStyle(this.scene.data.get('foregroundColor'))
 
-    if (this.isTower || isMine) {
+    if (this.isTower || this.isMine) {
       this.image.x = Math.round(this.x)
       this.image.y = Math.round(this.y)
 
-      this.image.setTexture(isMine ? 'mine' : 'spray')
+      this.image.setTexture(this.isMine ? 'mine' : 'spray')
 
-      if (isMine) {
+      if (this.isMine) {
         this.image.setTexture('mine')
         this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(0.3)
@@ -174,7 +175,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     const size = options.bodySize ?? options.bulletSize
     let offset = 0
-    if (this.isTower || isMine) offset = -size / 2
+    if (this.isTower || this.isMine) offset = -size / 2
     this._body.setCircle(size / 2, offset, offset)
     this._body.isCircle = true
     this.setVisible(true).setActive(true)
