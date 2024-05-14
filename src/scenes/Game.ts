@@ -26,6 +26,8 @@ export class Game extends Scene {
   create() {
     this.cameras.main.setRoundPixels(false)
 
+    this.sound.pauseOnBlur = false
+
     this.data.set('gameovered', false)
     this.data.set('wave', 0)
     this.data.set('level', 0)
