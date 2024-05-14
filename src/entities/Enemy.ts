@@ -61,17 +61,19 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     if (this.health <= 0) return
     this.health -= amount
 
-    this.setTintFill(0x999999)
-    this.stunned = true
-
     this.scene.sound.play('enemy-hit', {
       rate: 1.5 + Phaser.Math.RND.frac() * 2,
       volume: 0.1 + Phaser.Math.RND.frac() / 4,
     })
-    this.scene.time.delayedCall(300, () => {
-      this.setTintFill(this.color)
-      this.stunned = false
-    })
+
+    if (!this.stunned) {
+      this.setTintFill(0x999999)
+      this.stunned = true
+      this.scene.time.delayedCall(150 + amount * 150, () => {
+        this.setTintFill(this.color)
+        this.stunned = false
+      })
+    }
 
     if (this.health <= 0 && !this.dying) {
       this.dying = true
