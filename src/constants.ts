@@ -122,7 +122,7 @@ export const INITIAL_WEAPONS = [
     fireRate: 2,
     speed: 10,
     fireTiming: 0,
-    lifetime: 30,
+    lifetime: 80,
     health: 10,
     bulletSize: 3,
     damage: 0,
