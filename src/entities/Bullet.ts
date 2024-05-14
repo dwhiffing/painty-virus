@@ -144,7 +144,6 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.setFillStyle(this.scene.data.get('foregroundColor'))
 
     if (this.isTower || this.maxSetupTime === INITIAL_WEAPONS[3].setupTime) {
-      this.image.setAlpha(1)
       this.image.x = Math.round(this.x)
       this.image.y = Math.round(this.y)
 
@@ -153,8 +152,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       )
 
       if (this.maxSetupTime === INITIAL_WEAPONS[3].setupTime) {
+        this.image.setTexture('mine')
         this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(0.3)
+      }
+      if (this.isTower) {
+        this.image.setTexture('spray')
+        this.image.clearTint()
+        this.image.setAlpha(1)
       }
     }
 
