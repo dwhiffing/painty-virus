@@ -29,7 +29,11 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     this.setMask(this._scene.antivirus.mask)
 
-    this.image = this.scene.add.sprite(x, y, 'spray').setDepth(9).setAlpha(0)
+    this.image = this.scene.add
+      .sprite(x, y, 'spray')
+      .setDepth(9)
+      .setAlpha(0)
+      .setMask(this._scene.antivirus.mask)
     this.hitEnemies = []
 
     this.explodeCircle = this.scene.add
