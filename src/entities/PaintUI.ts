@@ -178,5 +178,7 @@ export class PaintUI {
       rectangles.push(rectangle)
       borderRectangles2.push(rectangle2)
     }
+    this.scene.data.set('foregroundColor', 0x000000)
+    this.scene.data.set('toolIndex', 0)
   }
 }
