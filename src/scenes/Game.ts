@@ -76,9 +76,9 @@ export class Game extends Scene {
       this.tweens.addCounter({
         from: 0,
         to: 10,
-        delay: 800,
+        delay: 100,
         ease: Phaser.Math.Easing.Quadratic.In,
-        duration: 2000,
+        duration: 1200,
         onUpdate: (_, b) => title.setAlpha(Math.floor(b.value) / 10),
         onComplete: async () => {
           const blink = this.tweens.addCounter({
@@ -101,7 +101,7 @@ export class Game extends Scene {
             to: 0,
             delay: 0,
             ease: Phaser.Math.Easing.Quadratic.In,
-            duration: 1500,
+            duration: 1200,
             onUpdate: (_, b) => {
               clickToStart.setAlpha(Math.floor(b.value) / 10)
               title.setAlpha(Math.floor(b.value) / 10)
