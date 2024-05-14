@@ -136,8 +136,10 @@ export class AntiVirus {
       activeWeapon.fireTiming = activeWeapon.fireRate
       const bullet = this.bullets.get(start.x, start.y) as Bullet
 
+      const damageFactor = Math.floor(this.scene.data.get('linedist') / 15 + 1)
       activeWeapon.speed = this.scene.data.get('linedist') * 5
       activeWeapon.explodeRadius = this.scene.data.get('linedist') + 6
+      activeWeapon.explodeDamage = 10 * damageFactor
 
       bullet?.moveToward(this.scene.data.get('lineangle'), activeWeapon)
       if (bullet) {
