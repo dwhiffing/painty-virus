@@ -235,8 +235,10 @@ export class AntiVirus {
       this.wave.enemies.length - this.scene.data.get('enemyIndex')
 
     if (livingEnemies <= 0 && remainingEnemies <= 0) {
-      this.scene.data.inc('wave')
-      this.nextWave()
+      this.scene.time.delayedCall(500, () => {
+        this.scene.data.inc('wave')
+        this.nextWave()
+      })
     }
   }
 
@@ -281,7 +283,7 @@ export class AntiVirus {
     nextEnemy()
     if (this.wave.enemies.length > 1)
       this.scene.time.addEvent({
-        delay: 3000 - 350 * this.scene.data.get('level'),
+        delay: 2000 - 250 * this.scene.data.get('level'),
         repeat: this.wave.enemies.length - 1,
         callback: nextEnemy,
       })
