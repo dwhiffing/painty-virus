@@ -283,7 +283,7 @@ export class AntiVirus {
     nextEnemy()
     if (this.wave.enemies.length > 1)
       this.scene.time.addEvent({
-        delay: 2000 - 200 * this.scene.data.get('level'),
+        delay: 3000 - 500 * this.scene.data.get('level'),
         repeat: this.wave.enemies.length - 1,
         callback: nextEnemy,
       })
