@@ -217,7 +217,7 @@ export class AntiVirus {
 
   getClosestEnemyTo(p: { x: number; y: number }) {
     return this.getEnemies()
-      .filter((c) => c.health > 0)
+      .filter((c) => c.health > 0 && c.active)
       .sort((a, b) => {
         const distA = Phaser.Math.Distance.BetweenPoints(a.getCenter(), p)
         const distB = Phaser.Math.Distance.BetweenPoints(b.getCenter(), p)
