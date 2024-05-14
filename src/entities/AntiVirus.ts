@@ -345,9 +345,9 @@ export class AntiVirus {
           activeWeapon,
         )
       }
-      if (b.setupTime > 0 || b.damage === 0) return
+      if (b.setupTime > 0 || b.damage === 0 || b.hitEnemies.includes(a)) return
       a.damage(b.damage)
-      b.setupTime = 10
+      b.hitEnemies.push(a)
       b.takeDamage(1)
     })
   }

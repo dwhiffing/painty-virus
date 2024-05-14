@@ -109,7 +109,7 @@ export const INITIAL_WEAPONS = [
     lifetime: 100,
     health: 100,
     bulletSize: 10,
-    damage: 15,
+    damage: 10,
     explodeRadius: 0,
     setupTime: 0,
   },
