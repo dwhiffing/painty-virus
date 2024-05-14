@@ -25,8 +25,15 @@ export class Game extends Scene {
 
   create() {
     this.cameras.main.setRoundPixels(false)
-
     this.sound.pauseOnBlur = false
+
+    this.game.events.on('blur', () => {
+      this.scene.pause()
+    })
+
+    this.game.events.on('focus', () => {
+      this.scene.resume()
+    })
 
     this.data.set('gameovered', false)
     this.data.set('wave', 0)
