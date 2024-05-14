@@ -4,7 +4,7 @@ export const w = 221
 export const h = 180
 
 export const ENEMY_TYPES = [
-  { type: 'base', frame: 2, health: 5, speed: 5, size: 4 },
+  { type: 'base', frame: 2, health: 5, speed: 4, size: 4 },
   { type: 'tough', frame: 0, health: 30, speed: 0, size: 4 },
   { type: 'quick', frame: 3, health: 5, speed: 8, size: 4 },
   { type: 'boss', frame: 6, health: 100, speed: -20, size: 4 },
@@ -118,12 +118,12 @@ export const INITIAL_WEAPONS = [
   {
     maxAmmo: 5,
     ammo: 5,
-    reloadRate: 100,
-    reloadTiming: 100,
+    reloadRate: 80,
+    reloadTiming: 80,
     fireRate: 2,
     speed: 10,
     fireTiming: 0,
-    lifetime: 80,
+    lifetime: 70,
     health: 10,
     bulletSize: 3,
     damage: 0,
@@ -155,12 +155,12 @@ export const INITIAL_WEAPONS = [
   {
     maxAmmo: 1,
     ammo: 1,
-    reloadRate: 500,
-    reloadTiming: 500,
+    reloadRate: 300,
+    reloadTiming: 300,
     fireRate: 10,
     speed: 0,
     fireTiming: 0,
-    lifetime: -1,
+    lifetime: 3333,
     health: 0,
     bodySize: 60,
     bulletSize: 0,
