@@ -38,7 +38,7 @@ export class PaintUI {
     this.scene.events.on('changedata', (_: any, key: string, value: any) => {
       if (key === 'toolIndex') {
         rectangles2.forEach((r) => r.setFillStyle(0xffffff))
-        rectangles2[value].setFillStyle(0xdddddd)
+        rectangles2[value].setFillStyle(0xffffff)
         borderRectangles.forEach((r) => r.setFillStyle(0xaaaaaa))
         borderRectangles[value].setFillStyle(0x000000)
       }
@@ -70,7 +70,7 @@ export class PaintUI {
       borderRectangles.push(borderRectangle)
 
       const reloadRectangle = this.scene.add
-        .rectangle(x + 4, 48 + i * 25, 20, 0, 0xaaaaaa)
+        .rectangle(x + 4, 48 + i * 25, 20, 0, 0xcccccc)
         .setOrigin(0, 1)
         .setDepth(11)
 
