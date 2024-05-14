@@ -8,7 +8,7 @@ import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 import { Enemy } from '../entities/Enemy'
 
-const SKIP_MENU = true
+const SKIP_MENU = false
 let SKIP_DESKTOP = false
 const TIMESCALE = 1
 
@@ -141,12 +141,10 @@ export class Game extends Scene {
   }
 
   async runIntro() {
+    if (!SKIP_DESKTOP) await this.tacky.say('Welcome!')
     if (!SKIP_DESKTOP) {
-      await this.tacky.say('Welcome!')
       await this.tacky.say('My name is Tacky.')
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
-    }
-    if (!SKIP_DESKTOP) {
       await this.tacky.say(
         "To get to know each other, why don't you Open painty and draw me a picture?",
       )
@@ -204,7 +202,7 @@ export class Game extends Scene {
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
     }
 
-    if (SKIP_DESKTOP) {
+    if (SKIP_DESKTOP && !this.paint) {
       this.paint = new PaintWindow(this, x, y, w, h)
     }
 
