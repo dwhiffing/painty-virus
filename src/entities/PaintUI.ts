@@ -29,7 +29,9 @@ export class PaintUI {
       .fillRect(x + 2, y + 15, 25, h - 17)
       .strokeRect(x + 2, y + 15, 25, h - 17)
 
-    const rectangles2: Phaser.GameObjects.Rectangle[] = []
+    const rectangles2: Phaser.GameObjects.Rectangle[] = [
+      this.scene.add.rectangle(0, 0, 0, 0),
+    ]
     const borderRectangles: Phaser.GameObjects.Rectangle[] = []
     const reloadRectangles: Phaser.GameObjects.Rectangle[] = []
     const weaponAmmo: Phaser.GameObjects.Rectangle[][] = []
@@ -158,7 +160,7 @@ export class PaintUI {
           0xffffff,
         )
         .setOrigin(0, 0)
-        .setDepth(10)
+        .setDepth(9)
       const rectangle = this.scene.add
         .rectangle(
           x + w - 25 + (i === 0 ? 0 : 3) + 1,
