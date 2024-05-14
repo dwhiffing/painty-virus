@@ -27,14 +27,6 @@ export class Game extends Scene {
     this.cameras.main.setRoundPixels(false)
     this.sound.pauseOnBlur = false
 
-    this.game.events.on('blur', () => {
-      this.scene.pause()
-    })
-
-    this.game.events.on('focus', () => {
-      this.scene.resume()
-    })
-
     this.data.set('gameovered', false)
     this.data.set('wave', 0)
     this.data.set('level', 0)
@@ -117,6 +109,14 @@ export class Game extends Scene {
   }
 
   async showDesktop() {
+    this.game.events.on('blur', () => {
+      this.scene.pause()
+    })
+
+    this.game.events.on('focus', () => {
+      this.scene.resume()
+    })
+
     new Icon(this, 5, 2, 'help', 'about', () => {
       this.aboutAlert.show()
     })
