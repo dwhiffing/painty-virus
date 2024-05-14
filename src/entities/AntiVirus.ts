@@ -35,7 +35,7 @@ export class AntiVirus {
 
     this.bullets = this.scene.add.group({
       classType: Bullet,
-      maxSize: 50,
+      maxSize: 250,
       runChildUpdate: true,
     })
 
@@ -322,11 +322,21 @@ export class AntiVirus {
       if (b.isTower && b.shootTime <= 0) {
         b.shootTime = b.maxShootTime
         const closest = this.getClosestEnemyTo(b)
-        const bullet = this.bullets.get(b.x, b.y) as Bullet
+        const bullet = this.bullets.get(b.x, b.y - 5) as Bullet
+
+        bullet.setFillStyle(b.fillColor)
         this.scene.sound.play('mouse-click', {
           rate: 0.05 + Phaser.Math.RND.frac() / 4,
         })
-        const activeWeapon = { ...INITIAL_WEAPONS[0], speed: 100 }
+        const activeWeapon = {
+          ...INITIAL_WEAPONS[0],
+          speed: 100,
+          damage: 0.2,
+          firerate: 1,
+          lifetime: 40,
+          bulletSize: 1,
+          isFromTower: true,
+        }
         bullet?.moveToward(
           closest?.getCenter() ?? {
             x: Phaser.Math.RND.between(x, w),

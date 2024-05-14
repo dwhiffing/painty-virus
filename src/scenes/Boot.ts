@@ -44,6 +44,7 @@ export class Boot extends Scene {
 
     this.load.image('goat', 'goat.png')
     this.load.image('alert', 'alert.png')
+    this.load.image('spray', 'spray.png')
     this.load.image('title', 'title.png')
     this.load.image('painty', 'painty.png')
     this.load.image('help', 'help.png')

@@ -19,6 +19,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   maxLifetime: number
   setupTime: number
   maxSetupTime: number
+  image: Phaser.GameObjects.Sprite
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     this._scene = scene
@@ -26,6 +27,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.setDepth(99)
 
     this.setMask(this._scene.antivirus.mask)
+
+    this.image = this.scene.add.sprite(x, y, 'spray').setDepth(9).setAlpha(0)
 
     this.explodeCircle = this.scene.add
       .circle(10, 10, 10, 0x000000)
@@ -82,8 +85,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeCircle
       .setPosition(this.x, this.y)
       .setDisplaySize(this.explodeRadius, this.explodeRadius)
-      .setFillStyle(this.scene.data.get('foregroundColor'))
+      .setFillStyle(this.fillColor)
       .setAlpha(1)
+
+    this.image.setAlpha(0)
 
     this.explodeTween = this.scene.tweens.add({
       targets: this.explodeCircle,
@@ -131,7 +136,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeRadius = options.explodeRadius
     this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime
-    this.setFillStyle(this.scene.data.get('foregroundColor'))
+    if (!options.isFromTower)
+      this.setFillStyle(this.scene.data.get('foregroundColor'))
+
+    if (this.isTower) {
+      this.image.setAlpha(1)
+      this.image.x = Math.round(this.x)
+      this.image.y = Math.round(this.y)
+    }
 
     const size = options.bodySize ?? options.bulletSize
     this._body.setSize(size, size)

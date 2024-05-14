@@ -72,6 +72,7 @@ export interface Weapon {
   bodySize?: number
   explodeDamage?: number
   shootTime?: number
+  isFromTower?: boolean
   isTower?: boolean
   explodeRadius: number
   damage: number
@@ -162,11 +163,11 @@ export const INITIAL_WEAPONS = [
     lifetime: -1,
     health: 0,
     bodySize: 60,
-    bulletSize: 5,
+    bulletSize: 0,
     damage: 0,
     explodeRadius: 0,
     setupTime: 0,
-    shootTime: 40,
+    shootTime: 15,
     isTower: true,
   },
 
