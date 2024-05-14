@@ -144,11 +144,11 @@ export const INITIAL_WEAPONS = [
     lifetime: -1,
     health: 0,
     bodySize: 23,
-    bulletSize: 8,
+    bulletSize: 0,
     damage: 1,
     explodeDamage: 30,
     explodeRadius: 50,
-    setupTime: 160,
+    setupTime: 220,
   },
 
   // spray
@@ -183,7 +183,7 @@ export const INITIAL_WEAPONS = [
     lifetime: 0,
     health: 0,
     bulletSize: 10,
-    damage: 30,
+    damage: 50,
     explodeRadius: 9999,
     setupTime: 0,
   },
