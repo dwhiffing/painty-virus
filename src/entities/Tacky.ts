@@ -8,7 +8,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     super(scene, 320 - 16, 200 - 23, 'tacky')
 
     this.text = this.scene.add
-      .bitmapText(320 - 88, 200 - 45, 'clarity', '', 8)
+      .bitmapText(320 - 88, 200 - 42, 'clarity', '', 8)
       .setTint(0)
       .setOrigin(0, 1)
       .setMaxWidth(80)
@@ -19,7 +19,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     this.setDepth(10002)
 
     this.textBox = this.scene.add
-      .rectangle(320 - 5, 200 - 42, 87, this.text.height + 6, 13421721)
+      .rectangle(320 - 5, 200 - 39, 87, this.text.height + 6, 13421721)
       .setStrokeStyle(1, 6710886)
       .setOrigin(1, 1)
       .setDepth(10000)
@@ -50,7 +50,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       },
     })
 
-    let timeout = _timeout ?? 1500 + text.length * 80
+    let timeout = _timeout ?? 1500 + text.length * 60
 
     return new Promise((resolve) => {
       this.scene.time.delayedCall(timeout, () => {

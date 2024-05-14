@@ -49,7 +49,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.setupTime--
     } else if (this.alpha !== 1) {
       if (this.maxSetupTime > 0) this.scene.sound.play('talk', { rate: 0.5 })
-      this.image.setAlpha(1)
+      if (this.maxSetupTime === INITIAL_WEAPONS[3].setupTime)
+        this.image.setAlpha(1)
       this.setAlpha(1)
     }
 
@@ -114,8 +115,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       )
     })
 
+    const damage = this.explodeDamage || this.damage
+
     this.scene.time.delayedCall(150, () => {
-      closeEnough.forEach((e) => e.damage(this.explodeDamage || this.damage))
+      closeEnough.forEach((e) => e.damage(damage))
     })
   }
 

@@ -178,14 +178,13 @@ export class Game extends Scene {
 
       await this.tacky.say('Oh, looks like painty detected some viruses')
 
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
-
-      await this.tacky.say('Are you surprised?')
-
-      await this.tacky.say('This is blundersoft painty-virus!')
       await new Promise((resolve) => this.time.delayedCall(500, resolve))
+
+      await this.tacky.say(
+        'Are you surprised? This is blundersoft painty-virus!',
+      )
       await this.tacky.say("It's supposed to do that!")
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+      await new Promise((resolve) => this.time.delayedCall(500, resolve))
 
       await this.tacky.say(
         'Use the different paint tools to eliminate the viruses.',
