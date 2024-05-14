@@ -30,6 +30,7 @@ export class PaintUI {
       .strokeRect(x + 2, y + 15, 25, h - 17)
 
     const rectangles2: Phaser.GameObjects.Rectangle[] = []
+    const borderRectangles: Phaser.GameObjects.Rectangle[] = []
     const reloadRectangles: Phaser.GameObjects.Rectangle[] = []
     const weaponAmmo: Phaser.GameObjects.Rectangle[][] = []
     const weaponAmmoMax: Phaser.GameObjects.Rectangle[][] = []
@@ -38,12 +39,20 @@ export class PaintUI {
       if (key === 'toolIndex') {
         rectangles2.forEach((r) => r.setFillStyle(0xffffff))
         rectangles2[value].setFillStyle(0xdddddd)
-
-        rectangle.setFillStyle(0xaaaaaa)
+        borderRectangles.forEach((r) => r.setFillStyle(0xaaaaaa))
+        borderRectangles[value].setFillStyle(0x000000)
       }
     })
     // weapon buttons
     for (let i = 0; i < 6; i++) {
+      const borderRectangle = this.scene.add
+        .rectangle(x + 3, 27 + i * 25, 22, 22, 0x000000)
+        .setOrigin(0, 0)
+        .setDepth(10)
+        .setInteractive()
+        .on('pointerdown', () => {
+          this.scene.data.set('toolIndex', i)
+        })
       const rectangle = this.scene.add
         .rectangle(x + 4, 28 + i * 25, 20, 20, i === 0 ? 0xaaaaaa : 0xffffff)
         .setOrigin(0, 0)
@@ -58,6 +67,7 @@ export class PaintUI {
         .setOrigin(0)
         .setDepth(12)
       rectangles2.push(rectangle)
+      borderRectangles.push(borderRectangle)
 
       const reloadRectangle = this.scene.add
         .rectangle(x + 4, 48 + i * 25, 20, 0, 0xaaaaaa)
