@@ -25,7 +25,7 @@ export class AntiVirus {
 
     new PaintUI(this.scene, x, y, w, h)
     this.enemies = this.scene.add.group({ classType: Enemy, maxSize: 8 })
-
+    this.scene.data.set('linedist', 0)
     const maskRect = this.scene.add
       .rectangle(x + 29, y + 16, w - 59, h - 18, 0x000000)
       .setOrigin(0)
