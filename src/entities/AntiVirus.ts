@@ -43,10 +43,17 @@ export class AntiVirus {
     this.weapons = INITIAL_WEAPONS.map((w) => ({ ...w }))
 
     this.setupWeapons()
+    this.startGame()
+  }
 
-    this.scene.tacky
-      .say(`Level ${this.scene.data.get('level') + 1}`)
-      .then(() => this.nextWave())
+  async startGame() {
+    if (!this.scene.data.get('showfullintro')) {
+      await this.scene.tacky.say("Let's get right to it then!")
+    }
+
+    await this.scene.tacky.say(`Level ${this.scene.data.get('level') + 1}`)
+
+    this.nextWave()
   }
 
   shootActiveWeapon() {

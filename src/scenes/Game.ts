@@ -249,11 +249,9 @@ export class Game extends Scene {
     if (SKIP_DESKTOP && !this.paint) {
       this.paint = new PaintWindow(this, x, y, w, h)
     }
-    if (SKIP_DESKTOP && !this.data.get('showfullintro'))
-      await this.tacky.say("Let's get right to it then!")
 
-    this.antivirus = new AntiVirus(this)
     this.paint.clear()
+    this.antivirus = new AntiVirus(this)
   }
 
   createAnimations() {
