@@ -75,6 +75,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     if (this.lifetime <= -2) {
       this.kill()
+      if (this.isTower) {
+        this.scene.sound.play('talk', { rate: 0.1 })
+      }
     }
     if (
       this.x < x + 30 ||
