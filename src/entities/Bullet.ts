@@ -133,12 +133,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
         this.explodeRadius / 1.8
       )
     })
-
-    const damage = this.explodeDamage || this.damage
-
     this.setPosition(-10, -10)
+
     this.scene.time.delayedCall(this.isMine ? 350 : 100, () => {
-      closeEnough.forEach((e) => e.damage(damage))
+      closeEnough.forEach((e) => e.damage(this))
     })
   }
 

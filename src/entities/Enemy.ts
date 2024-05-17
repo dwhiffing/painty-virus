@@ -1,5 +1,6 @@
 import { getInBounds, ENEMY_TYPES, ENEMY_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
+import { Bullet } from './Bullet'
 
 export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
@@ -49,6 +50,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.color = color
     this.speed = enemyType.speed
     this.setTintFill(this.color)
+    this.setAlpha(1)
     this.play(`enemy${enemyType.frame}`)
     this._angle = Phaser.Math.RND.rotation()
     this.moveTimer = 10 - this.speed
@@ -59,9 +61,10 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this._body.setSize(enemyType.size, enemyType.size)
   }
 
-  damage(amount: number) {
+  damage(bullet: Bullet) {
     if (this.health <= 0) return
-    this.health -= amount
+    const damage = bullet.explodeDamage || bullet.damage
+    this.health -= damage
 
     this.scene.sound.play('enemy-hit', {
       rate: 1.5 + Phaser.Math.RND.frac() * 2,
@@ -69,10 +72,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     })
 
     if (!this.stunned) {
-      this.setTintFill(0x999999)
+      this.setTintFill(bullet.fillColor)
+      this.setAlpha(0.6)
       this.stunned = true
-      this.scene.time.delayedCall(Math.min(500, 200 + amount * 30), () => {
+      this.scene.time.delayedCall(Math.min(500, 200 + damage * 30), () => {
         this.setTintFill(this.color)
+        this.setAlpha(1)
         this.stunned = false
       })
     }
@@ -80,6 +85,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     if (this.health <= 0 && !this.dying) {
       this.dying = true
       this.setTintFill(0x000000)
+      this.setAlpha(1)
       this.play('explode')
 
       if (this.maxHealth === ENEMY_TYPES[3].health) {
