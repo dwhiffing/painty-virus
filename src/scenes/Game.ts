@@ -131,7 +131,12 @@ export class Game extends Scene {
 
     const inCanvas = isInCanvas(this.input.activePointer)
     const frame =
-      inCanvas && !this.data.get('gameovered') ? this.data.get('toolIndex') : 6
+      inCanvas &&
+      !this.data.get('gameovered') &&
+      !this.data.get('forcecursor') &&
+      !this.aboutAlert.open
+        ? this.data.get('toolIndex') ?? 6
+        : 6
 
     this.cursor.setFrame(frame).setOrigin(...CURSOR_ORIGINS[frame])
   }
@@ -146,7 +151,7 @@ export class Game extends Scene {
     })
 
     new Icon(this, 5, 2, 'help', 'about', () => {
-      this.aboutAlert.show()
+      if (!this.virusAlert.open) this.aboutAlert.show()
     })
 
     if (!SKIP_DESKTOP) {
@@ -156,7 +161,7 @@ export class Game extends Scene {
     }
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
-      SKIP_DESKTOP = true
+      if (!this.data.get('showfullintro')) SKIP_DESKTOP = true
 
       if (!this.aboutAlert.open && !this.paint) {
         this.paint = new PaintWindow(this, x, y, w, h)
@@ -179,6 +184,7 @@ export class Game extends Scene {
     if (!SKIP_DESKTOP) await this.tacky.say('Welcome!')
     if (!SKIP_DESKTOP) {
       await this.tacky.say('My name is Tacky.')
+      this.data.set('showfullintro', true)
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
       await this.tacky.say(
         "To get to know each other, why don't you Open painty and draw me a picture?",
@@ -206,6 +212,8 @@ export class Game extends Scene {
 
       await new Promise((resolve) => this.time.delayedCall(10000, resolve))
 
+      this.data.set('forcecursor', true)
+      this.setCursor()
       this.sound.play('alert')
       this.virusAlert.show()
 
@@ -234,11 +242,15 @@ export class Game extends Scene {
         this.events.once('virusokclicked', resolve)
       })
       await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+      this.data.set('forcecursor', false)
+      this.setCursor()
     }
 
     if (SKIP_DESKTOP && !this.paint) {
       this.paint = new PaintWindow(this, x, y, w, h)
     }
+    if (SKIP_DESKTOP && !this.data.get('showfullintro'))
+      await this.tacky.say("Let's get right to it then!")
 
     this.antivirus = new AntiVirus(this)
     this.paint.clear()
