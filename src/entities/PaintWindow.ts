@@ -61,17 +61,41 @@ export class PaintWindow {
     })
 
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
-      if (!isInCanvas(p) || this.scene.antivirus) return
+      if (
+        !isInCanvas(p) ||
+        this.scene.antivirus ||
+        this.scene.aboutAlert.open ||
+        this.scene.virusAlert.open
+      )
+        return
 
       this.scene.data.set('drewapicture', true)
 
       this.paintGraphics.beginPath()
+
+      if (this.scene.data.get('toolIndex') === 0) {
+        this.paintGraphics
+          .fillStyle(this.scene.data.get('foregroundColor'))
+          .fillRect(p.x - 1, p.y - 1, 1, 1)
+      }
+
+      if (this.scene.data.get('toolIndex') === 1) {
+        this.paintGraphics
+          .fillStyle(this.scene.data.get('backgroundColor'))
+          .fillRect(p.x, p.y - 4, 6, 6)
+      }
 
       if (this.scene.data.get('toolIndex') === 2 && !activeLine.active) {
         linePreview.moveTo(p.x, p.y)
         activeLine.x = p.x
         activeLine.y = p.y
         activeLine.active = true
+      }
+
+      if (this.scene.data.get('toolIndex') === 3) {
+        this.paintGraphics
+          .fillStyle(this.scene.data.get('foregroundColor'))
+          .fillCircle(p.x, p.y, 6)
       }
 
       if (this.scene.data.get('toolIndex') === 4) {
@@ -90,13 +114,19 @@ export class PaintWindow {
     })
 
     this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => {
-      if (!isInCanvas(p) || this.scene.antivirus) return
+      if (
+        !isInCanvas(p) ||
+        this.scene.antivirus ||
+        this.scene.aboutAlert.open ||
+        this.scene.virusAlert.open
+      )
+        return
 
       let { toolIndex, foregroundColor, backgroundColor } =
         this.scene.data.getAll()
 
       if (toolIndex === 0) {
-        if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
+        if (Math.abs(p.downTime - this.scene.game.getTime()) < 5) {
           this.paintGraphics.moveTo(p.x, p.y)
         }
 
@@ -108,20 +138,12 @@ export class PaintWindow {
         }
       } else if (toolIndex === 1) {
         // eraser
-        if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
-          this.paintGraphics.moveTo(p.x, p.y)
-        }
-
         if (p.isDown) {
           this.paintGraphics
-            .lineStyle(4, backgroundColor)
-            .lineTo(p.x, p.y)
-            .strokePath()
+            .fillStyle(backgroundColor)
+            .fillRect(p.x, p.y - 4, 6, 6)
         }
       } else if (toolIndex === 2) {
-        // if (Math.abs(p.downTime - this.scene.game.getTime()) < 100) {
-        //   this.paintGraphics.moveTo(p.x, p.y)
-        // }
         if (p.isDown) {
           linePreview
             .clear()
@@ -134,7 +156,7 @@ export class PaintWindow {
       } else if (toolIndex === 3) {
         // brush
         if (p.isDown) {
-          this.paintGraphics.fillStyle(foregroundColor).fillCircle(p.x, p.y, 3)
+          this.paintGraphics.fillStyle(foregroundColor).fillCircle(p.x, p.y, 6)
         }
       } else if (toolIndex === 4) {
         // spray

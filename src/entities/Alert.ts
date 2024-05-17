@@ -112,8 +112,10 @@ export class Alert {
   }
 
   hide() {
-    this.contents.forEach((c) => c.setAlpha(0))
-    this.open = false
+    this.scene.time.delayedCall(100, () => {
+      this.contents.forEach((c) => c.setAlpha(0))
+      this.open = false
+    })
   }
   show() {
     this.open = true
