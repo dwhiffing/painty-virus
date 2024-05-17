@@ -22,6 +22,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   setupTime: number
   maxSetupTime: number
   image: Phaser.GameObjects.Sprite
+  image2: Phaser.GameObjects.Sprite
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     this._scene = scene
@@ -33,6 +34,12 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
 
     this.image = this.scene.add
       .sprite(x, y, 'spray')
+      .setDepth(BULLET_DEPTH - 2)
+      .setAlpha(0)
+      .setMask(this._scene.antivirus.mask)
+
+    this.image2 = this.scene.add
+      .sprite(x, y, 'spray-top')
       .setDepth(BULLET_DEPTH - 2)
       .setAlpha(0)
       .setMask(this._scene.antivirus.mask)
@@ -57,8 +64,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.setupTime--
     } else if (this.alpha !== 1) {
       if (this.maxSetupTime > 0) this.scene.sound.play('talk', { rate: 0.5 })
-      if (this.maxSetupTime === INITIAL_WEAPONS[3].setupTime)
+      if (this.isMine) {
         this.image.setAlpha(1)
+        this.image2.setAlpha(0)
+      }
       this.setAlpha(1)
     }
 
@@ -100,6 +109,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setAlpha(1)
 
     this.image.setAlpha(0)
+    this.image2.setAlpha(0)
 
     this.explodeTween = this.scene.tweens.add({
       targets: this.explodeCircle,
@@ -159,18 +169,24 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     if (this.isTower || this.isMine) {
       this.image.x = Math.round(this.x)
       this.image.y = Math.round(this.y)
+      this.image2.x = Math.round(this.x)
+      this.image2.y = Math.round(this.y)
 
       this.image.setTexture(this.isMine ? 'mine' : 'spray')
+      this.image2.setTexture(this.isMine ? 'mine' : 'spray')
 
       if (this.isMine) {
         this.image.setTexture('mine')
         this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(0.3)
+        this.image2.setAlpha(0)
       }
       if (this.isTower) {
         this.image.setTexture('spray')
-        this.image.clearTint()
+        this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(1)
+        this.image2.setTexture('spray-top')
+        this.image2.setAlpha(1)
       }
     }
 
