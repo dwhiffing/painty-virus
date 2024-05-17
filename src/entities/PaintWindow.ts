@@ -1,3 +1,4 @@
+import { PAINT_WINDOW_DEPTH } from '../constants'
 import { PaintUI } from '../entities/PaintUI'
 import { Game, isInCanvas } from '../scenes/Game'
 
@@ -14,10 +15,12 @@ export class PaintWindow {
     this.scene.cameras.main.setRoundPixels(false)
     new PaintUI(this.scene, x, y, w, h)
 
-    const paintContainer = this.scene.add.graphics().setDepth(3)
+    const paintContainer = this.scene.add
+      .graphics()
+      .setDepth(PAINT_WINDOW_DEPTH)
     this.paintGraphics = this.scene.add
       .graphics()
-      .setDepth(4)
+      .setDepth(PAINT_WINDOW_DEPTH + 1)
       .setMask(
         this.scene.add
           .rectangle(x + 29, y + 16, w - 59, h - 18, 0x000000)
@@ -25,7 +28,9 @@ export class PaintWindow {
           .setVisible(false)
           .createGeometryMask(),
       )
-    const linePreview = this.scene.add.graphics().setDepth(4)
+    const linePreview = this.scene.add
+      .graphics()
+      .setDepth(PAINT_WINDOW_DEPTH + 1)
 
     let activeSpray = { active: false, x: 0, y: 0 }
     let activeLine = { active: false, x: 0, y: 0 }

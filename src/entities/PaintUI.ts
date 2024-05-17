@@ -1,3 +1,4 @@
+import { PAINT_WINDOW_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
 
 const COLORS = [
@@ -8,7 +9,7 @@ export class PaintUI {
   constructor(scene: Game, x: number, y: number, w: number, h: number) {
     this.scene = scene
 
-    const graphics = this.scene.add.graphics().setDepth(2)
+    const graphics = this.scene.add.graphics().setDepth(PAINT_WINDOW_DEPTH - 9)
     // main window
     graphics
       .lineStyle(1, 0)
@@ -21,7 +22,9 @@ export class PaintUI {
       .fillStyle(526459)
       .fillRect(x + 1, y + 2, w - 3, 10)
       .lineBetween(x, y + 13, w + x, y + 13)
-    this.scene.add.bitmapText(x + 3, y + 1, 'clarity', 'Painty', 8).setDepth(10)
+    this.scene.add
+      .bitmapText(x + 3, y + 1, 'clarity', 'Painty', 8)
+      .setDepth(PAINT_WINDOW_DEPTH)
 
     // weapon bar
     graphics
@@ -50,7 +53,7 @@ export class PaintUI {
       const borderRectangle = this.scene.add
         .rectangle(x + 3, 27 + i * 25, 22, 22, 0x000000)
         .setOrigin(0, 0)
-        .setDepth(10)
+        .setDepth(PAINT_WINDOW_DEPTH)
         .setInteractive()
         .on('pointerdown', () => {
           this.scene.data.set('toolIndex', i)
@@ -58,7 +61,7 @@ export class PaintUI {
       const rectangle = this.scene.add
         .rectangle(x + 4, 28 + i * 25, 20, 20, i === 0 ? 0xaaaaaa : 0xffffff)
         .setOrigin(0, 0)
-        .setDepth(10)
+        .setDepth(PAINT_WINDOW_DEPTH)
         .setInteractive()
         .on('pointerdown', () => {
           this.scene.data.set('toolIndex', i)
@@ -67,14 +70,14 @@ export class PaintUI {
       this.scene.add
         .sprite(x + 6, 30 + i * 25, 'icons', i)
         .setOrigin(0)
-        .setDepth(12)
+        .setDepth(PAINT_WINDOW_DEPTH + 2)
       rectangles2.push(rectangle)
       borderRectangles.push(borderRectangle)
 
       const reloadRectangle = this.scene.add
         .rectangle(x + 4, 48 + i * 25, 20, 0, 0xcccccc)
         .setOrigin(0, 1)
-        .setDepth(11)
+        .setDepth(PAINT_WINDOW_DEPTH + 1)
 
       // @ts-ignore
       reloadRectangle.updateHeight = (n: number) => {
@@ -93,12 +96,12 @@ export class PaintUI {
           .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x999999)
           .setOrigin(0, 0)
           .setAlpha(0)
-          .setDepth(10)
+          .setDepth(PAINT_WINDOW_DEPTH)
         const rectangle = this.scene.add
           .rectangle(x + 5 + j * 2, 50 + i * 25, 1, 1, 0x000000)
           .setOrigin(0, 0)
           .setAlpha(0)
-          .setDepth(10)
+          .setDepth(PAINT_WINDOW_DEPTH)
 
         weaponAmmo[i].push(rectangle)
         weaponAmmoMax[i].push(rectangle2)
@@ -130,11 +133,11 @@ export class PaintUI {
       this.scene.add
         .rectangle(x + w - 25 + 1, 28 + 1, 18, 18, 0x000000)
         .setOrigin(0, 0)
-        .setDepth(10),
+        .setDepth(PAINT_WINDOW_DEPTH),
       this.scene.add
         .rectangle(x + w - 25, 28, 20, 20, 0xaaaaaa)
         .setOrigin(0, 0)
-        .setDepth(9),
+        .setDepth(PAINT_WINDOW_DEPTH - 1),
     ]
 
     const borderRectangles2: Phaser.GameObjects.Rectangle[] = []
@@ -160,7 +163,7 @@ export class PaintUI {
           0xffffff,
         )
         .setOrigin(0, 0)
-        .setDepth(9)
+        .setDepth(PAINT_WINDOW_DEPTH - 1)
       const rectangle = this.scene.add
         .rectangle(
           x + w - 25 + (i === 0 ? 0 : 3) + 1,
@@ -170,7 +173,7 @@ export class PaintUI {
           COLORS[i - 1],
         )
         .setOrigin(0, 0)
-        .setDepth(10)
+        .setDepth(PAINT_WINDOW_DEPTH)
         .setInteractive()
         .on('pointerdown', () => {
           rectangles[0].setFillStyle(COLORS[i - 1])

@@ -1,3 +1,4 @@
+import { ABOUT_ALERT_DEPTH, VIRUS_ALERT_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
 
 export class Alert {
@@ -16,12 +17,12 @@ export class Alert {
     const y = type === 'about' ? 40 : 60
     const w = 200
     const h = type === 'about' ? 120 : 80
-    const d = type === 'about' ? 50 : 60
+    const depth = type === 'about' ? ABOUT_ALERT_DEPTH : VIRUS_ALERT_DEPTH
     const title = type === 'about' ? 'credits' : 'alert'
 
     this.contents = []
 
-    const graphics = this.scene.add.graphics().setDepth(d)
+    const graphics = this.scene.add.graphics().setDepth(depth)
     // main window
     graphics
       .lineStyle(1, 0)
@@ -36,7 +37,7 @@ export class Alert {
       .lineBetween(x, y + 13, w + x, y + 13)
     const titleText = this.scene.add
       .bitmapText(x + 3, y + 1, 'clarity', title, 8)
-      .setDepth(d + 2)
+      .setDepth(depth + 2)
 
     this.contents.push(graphics, titleText)
 
@@ -50,20 +51,20 @@ export class Alert {
           8,
         )
         .setTint(0x000000)
-        .setDepth(d + 2)
+        .setDepth(depth + 2)
 
       const icon = this.scene.add
         .image(x + w - 10, y + 30, 'goat')
-        .setDepth(d + 2)
+        .setDepth(depth + 2)
         .setOrigin(1, 0)
       this.buttonText = this.scene.add
         .bitmapText(x + 90, y + 98, 'clarity', 'Ok', 8)
         .setTint(0x000000)
-        .setDepth(d + 2)
+        .setDepth(depth + 2)
 
       this.button = this.scene.add
         .rectangle(x + 80, y + 98, 34, 12, 0xaaaaaa)
-        .setDepth(d + 1)
+        .setDepth(depth + 1)
         .setOrigin(0)
         .setInteractive()
         .on('pointerdown', () => {
@@ -83,16 +84,16 @@ export class Alert {
         .setTint(0x000000)
         .setMaxWidth(w - 60)
         .setCenterAlign()
-        .setDepth(d + 2)
+        .setDepth(depth + 2)
 
       this.buttonText = this.scene.add
         .bitmapText(x + 90, y + 60, 'clarity', 'Ok', 8)
         .setTint(0x000000)
-        .setDepth(d + 2)
+        .setDepth(depth + 2)
 
       this.button = this.scene.add
         .rectangle(x + 80, y + 60, 34, 12, 0xaaaaaa)
-        .setDepth(d + 1)
+        .setDepth(depth + 1)
         .setOrigin(0)
         .setInteractive()
         .on('pointerdown', () => {
@@ -102,7 +103,7 @@ export class Alert {
 
       const icon = this.scene.add
         .image(x + 5, y + 20, 'alert')
-        .setDepth(d + 1)
+        .setDepth(depth + 1)
         .setOrigin(0, 0)
       this.contents.push(text, icon, this.button, this.buttonText)
     }

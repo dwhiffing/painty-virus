@@ -207,3 +207,11 @@ export const CURSOR_ORIGINS = [
   [0.2, 0.9],
   [0.2, 0.1],
 ]
+
+export const PAINT_WINDOW_DEPTH = 10
+export const ENEMY_DEPTH = 20
+export const ABOUT_ALERT_DEPTH = 30
+export const VIRUS_ALERT_DEPTH = 40
+export const BULLET_DEPTH = 50
+export const TACKY_DEPTH = 60
+export const CURSOR_DEPTH = 70

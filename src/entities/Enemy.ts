@@ -1,4 +1,4 @@
-import { getInBounds, ENEMY_TYPES } from '../constants'
+import { getInBounds, ENEMY_TYPES, ENEMY_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
 
 export class Enemy extends Phaser.GameObjects.Sprite {
@@ -14,7 +14,8 @@ export class Enemy extends Phaser.GameObjects.Sprite {
   constructor(scene: Game, x: number, y: number) {
     super(scene, x, y, 'enemies')
     this._scene = scene
-    this.setDepth(20)
+
+    this.setDepth(ENEMY_DEPTH)
     this.moveTimer = 999
     this.health = 5
     this.color = 0xff0000

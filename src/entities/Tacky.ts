@@ -1,3 +1,4 @@
+import { TACKY_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
 
 export class Tacky extends Phaser.GameObjects.Sprite {
@@ -12,17 +13,17 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       .setTint(0)
       .setOrigin(0, 1)
       .setMaxWidth(80)
-      .setDepth(10001)
+      .setDepth(TACKY_DEPTH + 1)
 
     this.scene.add.existing(this)
 
-    this.setDepth(10002)
+    this.setDepth(TACKY_DEPTH + 2)
 
     this.textBox = this.scene.add
       .rectangle(320 - 5, 200 - 39, 87, this.text.height + 6, 13421721)
       .setStrokeStyle(1, 6710886)
       .setOrigin(1, 1)
-      .setDepth(10000)
+      .setDepth(TACKY_DEPTH)
       .setVisible(false)
   }
 

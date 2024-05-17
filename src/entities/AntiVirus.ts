@@ -7,6 +7,7 @@ import {
   Weapon,
   INITIAL_WEAPONS,
   getInBounds,
+  BULLET_DEPTH,
 } from '../constants'
 import { Game } from '../scenes/Game'
 
@@ -113,7 +114,7 @@ export class AntiVirus {
   }
 
   setupWeapons() {
-    const lineGraphics = this.scene.add.graphics().setDepth(99)
+    const lineGraphics = this.scene.add.graphics().setDepth(BULLET_DEPTH)
     lineGraphics.lineStyle(1, 0x000000)
 
     this.scene.data.set('toolIndex', 0)

@@ -1,4 +1,4 @@
-import { INITIAL_WEAPONS, Weapon, h, w, x, y } from '../constants'
+import { BULLET_DEPTH, INITIAL_WEAPONS, Weapon, h, w, x, y } from '../constants'
 import { Game } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
@@ -26,13 +26,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     super(scene, x, y, 2, 2, scene.data.values.foregroundColor)
     this._scene = scene
     scene.physics.add.existing(this)
-    this.setDepth(99)
+
+    this.setDepth(BULLET_DEPTH)
 
     this.setMask(this._scene.antivirus.mask)
 
     this.image = this.scene.add
       .sprite(x, y, 'spray')
-      .setDepth(9)
+      .setDepth(BULLET_DEPTH - 2)
       .setAlpha(0)
       .setMask(this._scene.antivirus.mask)
     this.hitEnemies = []
@@ -40,7 +41,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeCircle = this.scene.add
       .circle(10, 10, 10, 0x000000)
       .setAlpha(0)
-      .setDepth(100)
+      .setDepth(BULLET_DEPTH + 1)
       .setMask(this._scene.antivirus.mask)
   }
   update() {

@@ -3,7 +3,7 @@ import { Icon } from '../entities/Icon'
 import { AntiVirus } from '../entities/AntiVirus'
 
 import { PaintWindow } from '../entities/PaintWindow'
-import { x, y, w, h, CURSOR_ORIGINS } from '../constants'
+import { x, y, w, h, CURSOR_ORIGINS, CURSOR_DEPTH } from '../constants'
 import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 import { Enemy } from '../entities/Enemy'
@@ -37,7 +37,7 @@ export class Game extends Scene {
     this.cursor = this.add
       .sprite(0, 0, 'icons', 6)
       .setOrigin(0.2, 0.1)
-      .setDepth(999999)
+      .setDepth(CURSOR_DEPTH + 2)
 
     this.data.set('gameovered', false)
     this.data.set('wave', 0)
@@ -130,7 +130,8 @@ export class Game extends Scene {
     )
 
     const inCanvas = isInCanvas(this.input.activePointer)
-    const frame = inCanvas ? this.data.get('toolIndex') : 6
+    const frame =
+      inCanvas && !this.data.get('gameovered') ? this.data.get('toolIndex') : 6
 
     this.cursor.setFrame(frame).setOrigin(...CURSOR_ORIGINS[frame])
   }
@@ -314,7 +315,7 @@ export class Game extends Scene {
       .graphics()
       .fillStyle(0x000000)
       .fillRect(0, 0, 320, 200)
-      .setDepth(99997)
+      .setDepth(CURSOR_DEPTH + 3)
       .setAlpha(0)
 
     const enemies = this.antivirus.enemies.getChildren() as Enemy[]
@@ -324,13 +325,16 @@ export class Game extends Scene {
     this.tweens.add({ targets: black, alpha: 1 })
 
     await new Promise((resolve) => this.time.delayedCall(3000, resolve))
+    black.setAlpha(0)
+
+    this.setCursor()
     this.sound.play('bsod')
 
     this.add
       .graphics()
       .fillStyle(0x0000ff)
       .fillRect(0, 0, 320, 200)
-      .setDepth(99998)
+      .setDepth(CURSOR_DEPTH)
 
     this.add
       .bitmapText(
@@ -340,7 +344,7 @@ export class Game extends Scene {
         'An Error has occured!\n\n\n\nError: 0E : 06F : GAMEOVER\n\n\n\n\nClick to continue...',
         8,
       )
-      .setDepth(99999)
+      .setDepth(CURSOR_DEPTH + 1)
       .setOrigin(0.5)
       .setCenterAlign()
 
