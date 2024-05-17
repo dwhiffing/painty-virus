@@ -131,6 +131,8 @@ export class AntiVirus {
       PAINT_COLORS[Phaser.Math.RND.between(0, PAINT_COLORS.length - 1)],
     )
     this.scene.input.on('pointerup', () => {
+      if (this.scene.data.get('gameovered')) return
+
       const toolIndex = this.scene.data.get('toolIndex')
       const start = this.scene.data.get('linestart')
       lineGraphics.clear()
@@ -165,6 +167,8 @@ export class AntiVirus {
     this.scene.input.on('pointermove', (p: Phaser.Input.Pointer) => {
       const toolIndex = this.scene.data.get('toolIndex')
       const start = this.scene.data.get('linestart')
+
+      if (this.scene.data.get('gameovered')) return
       if (!getInBounds(p.position) || toolIndex !== 2 || !start) return
 
       const angle = Phaser.Math.Angle.BetweenPoints(start, p)
@@ -189,6 +193,7 @@ export class AntiVirus {
     })
 
     this.scene.input.on('pointerdown', (p: Phaser.Input.Pointer) => {
+      if (this.scene.data.get('gameovered')) return
       if (!getInBounds(p.position)) return
 
       this.shootActiveWeapon()
@@ -260,6 +265,8 @@ export class AntiVirus {
   }
 
   nextWave() {
+    if (this.scene.data.get('gameovered')) return
+
     if (!this.wave) {
       this.nextLevel()
       return
@@ -267,6 +274,8 @@ export class AntiVirus {
     this.scene.data.set('enemyIndex', 0)
 
     const nextEnemy = () => {
+      if (this.scene.data.get('gameovered')) return
+
       const enemy = this.wave?.enemies[this.scene.data.get('enemyIndex')]
       if (enemy) {
         this.scene.data.inc('enemyIndex')
@@ -302,6 +311,7 @@ export class AntiVirus {
   }
 
   nextLevel() {
+    if (this.scene.data.get('gameovered')) return
     this.scene.data.inc('level')
     this.scene.data.set('wave', 0)
 
@@ -328,6 +338,8 @@ export class AntiVirus {
       this.scene.data.get('toolIndex') === 0 &&
       getInBounds(this.scene.input.activePointer.position)
     ) {
+      if (this.scene.data.get('gameovered')) return
+
       this.shootActiveWeapon()
     }
     if (!this.enemies.children || !this.bullets.children) return
