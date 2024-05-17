@@ -125,8 +125,8 @@ export class Game extends Scene {
 
   setCursor() {
     this.cursor.setPosition(
-      this.input.activePointer.x,
-      this.input.activePointer.y,
+      Math.floor(this.input.activePointer.x),
+      Math.floor(this.input.activePointer.y),
     )
 
     const inCanvas = isInCanvas(this.input.activePointer)
