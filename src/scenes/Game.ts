@@ -298,6 +298,8 @@ export class Game extends Scene {
   async loseLife() {
     if (this.data.get('gameovered')) return
 
+    this.cameras.main.shake(400, 0.01, true)
+
     this.data.set('lives', this.data.get('lives') - 1)
     const lives = this.data.get('lives')
 
