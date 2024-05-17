@@ -47,6 +47,7 @@ export class Boot extends Scene {
     this.load.image('spray', 'spray.png')
     this.load.image('spray-top', 'spray-top.png')
     this.load.image('mine', 'mine.png')
+    this.load.image('mine-outline', 'mine-outline.png')
     this.load.image('title', 'title.png')
     this.load.image('painty', 'painty.png')
     this.load.image('help', 'help.png')

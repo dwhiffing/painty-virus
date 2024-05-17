@@ -62,10 +62,11 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     if (this.setupTime > 0) {
       this.setAlpha(0.5)
       this.setupTime--
-    } else if (this.alpha !== 1) {
-      if (this.maxSetupTime > 0) this.scene.sound.play('talk', { rate: 0.5 })
-      if (this.isMine) {
-        this.image.setAlpha(1)
+    } else if (this.setupTime === 0) {
+      if (this.isMine && this.active && this.visible) {
+        this.setupTime = -1
+        this.scene.sound.play('talk', { rate: 0.5 })
+        this.image.setTexture('mine')
         this.image2.setAlpha(0)
       }
       this.setAlpha(1)
@@ -170,13 +171,10 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.image2.x = Math.round(this.x)
       this.image2.y = Math.round(this.y)
 
-      this.image.setTexture(this.isMine ? 'mine' : 'spray')
-      this.image2.setTexture(this.isMine ? 'mine' : 'spray')
-
       if (this.isMine) {
-        this.image.setTexture('mine')
+        this.image.setTexture('mine-outline')
         this.image.setTint(this.scene.data.get('foregroundColor'))
-        this.image.setAlpha(0.3)
+        this.image.setAlpha(1)
         this.image2.setAlpha(0)
       }
       if (this.isTower) {
