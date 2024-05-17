@@ -126,7 +126,10 @@ export class AntiVirus {
     lineGraphics.lineStyle(1, this.scene.data.get('foregroundColor'))
 
     this.scene.data.set('toolIndex', 0)
-    this.scene.data.set('foregroundColor', PAINT_COLORS[0])
+    this.scene.data.set(
+      'foregroundColor',
+      PAINT_COLORS[Phaser.Math.RND.between(0, PAINT_COLORS.length - 1)],
+    )
     this.scene.input.on('pointerup', () => {
       const toolIndex = this.scene.data.get('toolIndex')
       const start = this.scene.data.get('linestart')
