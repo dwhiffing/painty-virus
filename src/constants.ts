@@ -84,6 +84,7 @@ export interface Weapon {
   shootTime?: number
   isFromTower?: boolean
   isTower?: boolean
+  isBucket?: boolean
   isEraser?: boolean
   isMine?: boolean
   particleCount?: number
@@ -213,7 +214,9 @@ export const INITIAL_WEAPONS = [
     bulletSize: 1,
     damage: 50,
     explodeRadius: 9999,
+    particleLifespan: 1500,
     setupTime: 0,
+    isBucket: true,
   },
 ]
 
