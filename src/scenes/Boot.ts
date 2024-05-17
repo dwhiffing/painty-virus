@@ -43,6 +43,7 @@ export class Boot extends Scene {
     this.load.audio('next-level', 'sfx/next-level.wav')
 
     this.load.image('goat', 'goat.png')
+    this.load.image('pixel', 'pixel.png')
     this.load.image('alert', 'alert.png')
     this.load.image('spray', 'spray.png')
     this.load.image('spray-top', 'spray-top.png')

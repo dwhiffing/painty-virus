@@ -1,4 +1,4 @@
-import { BULLET_DEPTH, INITIAL_WEAPONS, Weapon, h, w, x, y } from '../constants'
+import { BULLET_DEPTH, Weapon, h, w, x, y } from '../constants'
 import { Game, TIMESCALE } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
@@ -12,6 +12,11 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   isTower: boolean
   isMine: boolean
   shootTime: number
+  isEraser: boolean
+  particleCount: number
+  stainSize: number
+  particleSpeed: number
+  particleLifespan: number
   maxShootTime: number
   explodeRadius: number
   explodeDamage: number
@@ -60,6 +65,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       this.shootTime -= TIMESCALE
     }
 
+    if (this.visible && this.isEraser) this.emitStain()
+
     if (this.setupTime > 0) {
       this.setAlpha(0.5)
       this.setupTime -= TIMESCALE
@@ -80,10 +87,11 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       }
     }
     if (
-      this.x < x + 30 ||
-      this.x > w + 20 ||
-      this.y < y + 16 ||
-      this.y > h + 8
+      (this.x < x + 30 ||
+        this.x > w + 20 ||
+        this.y < y + 16 ||
+        this.y > h + 8) &&
+      this.visible
     ) {
       this.setActive(false)
       this.setVisible(false)
@@ -101,9 +109,52 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     }
   }
 
+  emitParticles() {
+    if (this.hitEnemies.length > 0 || this.explodeRadius > 0) {
+      this._scene.antivirus.particles.setConfig({
+        speedX: { min: -this.particleSpeed, max: this.particleSpeed },
+        speedY: { min: -this.particleSpeed, max: this.particleSpeed },
+        alpha: { start: 1, end: 0 },
+        lifespan: { min: 600, max: 1000 },
+        tint: this.fillColor,
+      })
+      this._scene.antivirus.particles.emitParticle(
+        this.particleCount,
+        this.x,
+        this.y,
+      )
+    }
+  }
+
+  emitStain() {
+    if (this.stainSize > 0) {
+      const size = this.stainSize
+      this._scene.antivirus.stains.setConfig({
+        speedX: 0,
+        speedY: 0,
+        scale: size,
+        alpha: { start: 0.5, end: 0 },
+        lifespan: {
+          max: this.particleLifespan * 1.1,
+          min: this.particleLifespan * 0.9,
+        },
+        tint: this.fillColor,
+      })
+      this._scene.antivirus.stains.emitParticle(
+        1,
+        this.x - size / 2,
+        this.y - size / 2,
+      )
+    }
+  }
+
   kill() {
-    this.setVisible(false).setActive(false)
+    if (!this.visible) return
+
     this._body.setVelocity(0)
+    this.setVisible(false)
+    this.emitParticles()
+    this.emitStain()
 
     const enemies = this._scene.antivirus.enemies.getChildren() as Enemy[]
 
@@ -112,17 +163,26 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setPosition(this.x, this.y)
       .setDisplaySize(this.explodeRadius, this.explodeRadius)
       .setFillStyle(this.fillColor)
-      .setAlpha(1)
+      .setAlpha(0.65)
 
     this.image.setAlpha(0)
     this.image2.setAlpha(0)
 
+    const duration =
+      this.explodeRadius === 0
+        ? 10
+        : Phaser.Math.RND.between(
+            this.particleLifespan * 0.9,
+            this.particleLifespan * 1.1,
+          )
     this.explodeTween = this.scene.tweens.add({
       targets: this.explodeCircle,
+      duration,
       alpha: 0,
+      onComplete: () => this.setActive(false),
     })
 
-    if (this.explodeRadius === INITIAL_WEAPONS[3].explodeRadius) {
+    if (this.isMine) {
       this.scene.sound.play('mine-explode', {
         rate: 0.8 + Phaser.Math.RND.frac() / 4,
       })
@@ -156,7 +216,6 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.health = options.health
     this.lifetime = options.lifetime
     this.speed = options.speed
-    this.isTower = !!options.isTower
     this.maxShootTime = options.shootTime ?? 0
     this.shootTime = options.shootTime ?? 0
     this.setupTime = options.setupTime
@@ -164,8 +223,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeRadius = options.explodeRadius
     this.explodeDamage = options.explodeDamage ?? 0
     this.maxLifetime = options.lifetime
+    this.isTower = !!options.isTower
+    this.isEraser = !!options.isEraser
+    this.isMine = !!options.isMine
+    this.particleCount = options.particleCount ?? 0
+    this.particleLifespan = options.particleLifespan ?? 9000
+    this.stainSize = options.stainSize ?? 0
+    this.particleSpeed = options.particleSpeed ?? 10
     this.hitEnemies = []
-    this.isMine = this.maxSetupTime === INITIAL_WEAPONS[3].setupTime
 
     if (!options.isFromTower)
       this.setFillStyle(this.scene.data.get('foregroundColor'))

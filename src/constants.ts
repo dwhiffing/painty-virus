@@ -84,6 +84,12 @@ export interface Weapon {
   shootTime?: number
   isFromTower?: boolean
   isTower?: boolean
+  isEraser?: boolean
+  isMine?: boolean
+  particleCount?: number
+  particleSpeed?: number
+  particleLifespan?: number
+  stainSize?: number
   explodeRadius: number
   damage: number
   setupTime: number
@@ -103,6 +109,9 @@ export const INITIAL_WEAPONS = [
     lifetime: 100,
     bulletSize: 2,
     damage: 1,
+    particleCount: 4,
+    stainSize: 2,
+    particleSpeed: 20,
     explodeRadius: 0,
     setupTime: 0,
   },
@@ -120,6 +129,11 @@ export const INITIAL_WEAPONS = [
     health: 100,
     bulletSize: 10,
     damage: 10,
+    particleCount: 14,
+    stainSize: 10,
+    particleSpeed: 20,
+    particleLifespan: 500,
+    isEraser: true,
     explodeRadius: 0,
     setupTime: 0,
   },
@@ -137,6 +151,9 @@ export const INITIAL_WEAPONS = [
     health: 10,
     bulletSize: 3,
     damage: 0,
+    particleCount: 20,
+    stainSize: 0,
+    particleSpeed: 50,
     explodeDamage: 10,
     explodeRadius: 10,
     setupTime: 0,
@@ -153,6 +170,7 @@ export const INITIAL_WEAPONS = [
     fireTiming: 0,
     lifetime: -1,
     health: 0,
+    isMine: true,
     bodySize: 35,
     bulletSize: 0,
     damage: 1,

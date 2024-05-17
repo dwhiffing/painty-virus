@@ -9,6 +9,7 @@ import {
   getInBounds,
   BULLET_DEPTH,
   PAINT_COLORS,
+  ENEMY_DEPTH,
 } from '../constants'
 import { Game, TIMESCALE } from '../scenes/Game'
 
@@ -21,6 +22,8 @@ export class AntiVirus {
   enemies: Phaser.GameObjects.Group
   mask: Phaser.Display.Masks.GeometryMask
   bullets: Phaser.GameObjects.Group
+  particles: Phaser.GameObjects.Particles.ParticleEmitter
+  stains: Phaser.GameObjects.Particles.ParticleEmitter
   weapons: Weapon[]
   constructor(scene: Game) {
     this.scene = scene
@@ -34,6 +37,18 @@ export class AntiVirus {
       .setVisible(false)
 
     this.mask = maskRect.createGeometryMask()
+
+    this.particles = this.scene.add
+      .particles(0, 0, 'pixel')
+      .stop()
+      .setDepth(ENEMY_DEPTH - 2)
+      .setMask(this.mask)
+
+    this.stains = this.scene.add
+      .particles(0, 0, 'pixel')
+      .stop()
+      .setDepth(ENEMY_DEPTH - 2)
+      .setMask(this.mask)
 
     this.bullets = this.scene.add.group({
       classType: Bullet,
@@ -154,6 +169,8 @@ export class AntiVirus {
       activeWeapon.speed = this.scene.data.get('linedist') * 5
       activeWeapon.explodeRadius = this.scene.data.get('linedist') + 6
       activeWeapon.explodeDamage = 10 * damageFactor
+      activeWeapon.particleCount = Math.floor(12 * damageFactor)
+      activeWeapon.particleSpeed = Math.floor(20 * damageFactor)
 
       bullet?.moveToward(this.scene.data.get('lineangle'), activeWeapon)
       if (bullet) {
@@ -364,6 +381,8 @@ export class AntiVirus {
           firerate: 1,
           lifetime: 40,
           bulletSize: 1,
+          particleCount: 1,
+          stainSize: 1,
           isFromTower: true,
         }
         bullet?.moveToward(
