@@ -16,9 +16,13 @@ export const ENEMY_TYPES = [
   // { type: 'support', frame: 1, health: 5, speed: 4, size: 4 },
 ]
 
-const COLORS = [0x000000, 0xff0000, 0x00ff00, 0x0000ff]
+export const PAINT_COLORS = [
+  0x2a2a2a, 0xea3323, 0x4cd522, 0x0000f5, 0xefc821, 0xea33f7, 0x38dfe1,
+]
 
-const e = (type: number) => ({ type, color: COLORS[type] })
+const ENEMY_COLORS = [0x000000, 0xff0000, 0x00ff00, 0x0000ff]
+
+const e = (type: number) => ({ type, color: ENEMY_COLORS[type] })
 
 export const LEVELS = [
   // level 1

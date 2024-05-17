@@ -1,9 +1,6 @@
-import { PAINT_WINDOW_DEPTH } from '../constants'
+import { PAINT_COLORS, PAINT_WINDOW_DEPTH } from '../constants'
 import { Game } from '../scenes/Game'
 
-const COLORS = [
-  0x000000, 0xea3323, 0x75fb4c, 0x0000f5, 0xffff54, 0xea33f7, 0x75fbfd,
-]
 export class PaintUI {
   scene: Game
   constructor(scene: Game, x: number, y: number, w: number, h: number) {
@@ -131,7 +128,7 @@ export class PaintUI {
 
     const rectangles: Phaser.GameObjects.Rectangle[] = [
       this.scene.add
-        .rectangle(x + w - 25 + 1, 28 + 1, 18, 18, 0x000000)
+        .rectangle(x + w - 25 + 1, 28 + 1, 18, 18, PAINT_COLORS[0])
         .setOrigin(0, 0)
         .setDepth(PAINT_WINDOW_DEPTH),
       this.scene.add
@@ -144,11 +141,11 @@ export class PaintUI {
 
     this.scene.events.on('changedata', (_: any, key: string, value: any) => {
       if (key === 'foregroundColor') {
-        const index = COLORS.indexOf(value)
+        const index = PAINT_COLORS.indexOf(value)
         rectangles2.forEach((r) => r.setFillStyle(0xffffff))
         rectangles2[index].setFillStyle(0xffffff)
         borderRectangles2.forEach((r) => r.setFillStyle(0xaaaaaa))
-        borderRectangles2[index].setFillStyle(0xffffff)
+        borderRectangles2[index].setFillStyle(0x000000)
       }
     })
 
@@ -170,20 +167,20 @@ export class PaintUI {
           i === 0 ? 28 : 34 + i * 17 + 1,
           i === 0 ? 20 : 13,
           i === 0 ? 20 : 13,
-          COLORS[i - 1],
+          PAINT_COLORS[i - 1],
         )
         .setOrigin(0, 0)
         .setDepth(PAINT_WINDOW_DEPTH)
         .setInteractive()
         .on('pointerdown', () => {
-          rectangles[0].setFillStyle(COLORS[i - 1])
-          this.scene.data.set('foregroundColor', COLORS[i - 1])
+          rectangles[0].setFillStyle(PAINT_COLORS[i - 1])
+          this.scene.data.set('foregroundColor', PAINT_COLORS[i - 1])
         })
 
       rectangles.push(rectangle)
       borderRectangles2.push(rectangle2)
     }
-    this.scene.data.set('foregroundColor', 0x000000)
+    this.scene.data.set('foregroundColor', PAINT_COLORS[0])
     this.scene.data.set('toolIndex', 0)
   }
 }

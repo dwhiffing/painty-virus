@@ -8,6 +8,7 @@ import {
   INITIAL_WEAPONS,
   getInBounds,
   BULLET_DEPTH,
+  PAINT_COLORS,
 } from '../constants'
 import { Game } from '../scenes/Game'
 
@@ -122,10 +123,10 @@ export class AntiVirus {
 
   setupWeapons() {
     const lineGraphics = this.scene.add.graphics().setDepth(BULLET_DEPTH)
-    lineGraphics.lineStyle(1, 0x000000)
+    lineGraphics.lineStyle(1, this.scene.data.get('foregroundColor'))
 
     this.scene.data.set('toolIndex', 0)
-    this.scene.data.set('foregroundColor', 0)
+    this.scene.data.set('foregroundColor', PAINT_COLORS[0])
     this.scene.input.on('pointerup', () => {
       const toolIndex = this.scene.data.get('toolIndex')
       const start = this.scene.data.get('linestart')
@@ -178,7 +179,7 @@ export class AntiVirus {
       }
 
       lineGraphics.clear()
-      lineGraphics.lineStyle(1, 0x000000)
+      lineGraphics.lineStyle(1, this.scene.data.get('foregroundColor'))
       lineGraphics.moveTo(start.x, start.y)
       lineGraphics.lineTo(f.x, f.y)
       lineGraphics.stroke()

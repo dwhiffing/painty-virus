@@ -1,4 +1,4 @@
-import { PAINT_WINDOW_DEPTH } from '../constants'
+import { PAINT_COLORS, PAINT_WINDOW_DEPTH } from '../constants'
 import { PaintUI } from '../entities/PaintUI'
 import { Game, isInCanvas } from '../scenes/Game'
 
@@ -9,7 +9,7 @@ export class PaintWindow {
     this.scene = scene
 
     this.scene.data.set('toolIndex', 0)
-    this.scene.data.set('foregroundColor', 0)
+    this.scene.data.set('foregroundColor', PAINT_COLORS[0])
     this.scene.data.set('backgroundColor', 16777215)
 
     this.scene.cameras.main.setRoundPixels(false)
