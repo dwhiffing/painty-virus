@@ -17,10 +17,12 @@ export class Icon {
       .setOrigin(0, 0)
       .setInteractive()
 
-    this.scene.add.bitmapText(x, y + 33, 'clarity', text, 8).setCenterAlign()
+    this.scene.add
+      .bitmapText(x, y + 33, 'clarity', text, 8)
+      .setCenterAlign()
+      .setInteractive()
+      .on('pointerdown', onClick)
 
-    icon.on('pointerdown', () => {
-      onClick()
-    })
+    icon.on('pointerdown', onClick)
   }
 }
