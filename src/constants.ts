@@ -157,8 +157,8 @@ export const INITIAL_WEAPONS = [
     bulletSize: 0,
     damage: 1,
     explodeDamage: 30,
-    explodeRadius: 50,
-    setupTime: 220,
+    explodeRadius: 40,
+    setupTime: 250,
   },
 
   // spray
