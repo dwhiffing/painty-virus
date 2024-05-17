@@ -1,5 +1,5 @@
 import { PaintUI } from '../entities/PaintUI'
-import { Game } from '../scenes/Game'
+import { Game, isInCanvas } from '../scenes/Game'
 
 export class PaintWindow {
   scene: Game
@@ -36,12 +36,6 @@ export class PaintWindow {
       .fillStyle(16777215)
       .fillRect(x + 29, y + 15, h - 17, h - 17)
       .strokeRect(x + 29, y + 15, h - 17, h - 17)
-
-    const isInCanvas = (p: { x: number; y: number }) => {
-      if (p.x < x + 29 || p.x > x + h + 11) return false
-      if (p.y < y + 16 || p.y > h + y - 3) return false
-      return true
-    }
 
     this.scene.input.on('pointerup', (p: Phaser.Input.Pointer) => {
       this.paintGraphics.closePath()

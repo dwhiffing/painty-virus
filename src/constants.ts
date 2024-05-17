@@ -197,3 +197,13 @@ export const INITIAL_WEAPONS = [
 
 export const getInBounds = (p: Phaser.Math.Vector2) =>
   !(p.x < x + 30 || p.x > w + 20 || p.y < y + 16 || p.y > h + 8)
+
+export const CURSOR_ORIGINS = [
+  [0.3, 1],
+  [0.1, 0.8],
+  [0.1, 0.1],
+  [0.5, 1],
+  [0.3, 0.3],
+  [0.2, 0.9],
+  [0.2, 0.1],
+]

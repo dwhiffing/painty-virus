@@ -3,7 +3,7 @@ import { Icon } from '../entities/Icon'
 import { AntiVirus } from '../entities/AntiVirus'
 
 import { PaintWindow } from '../entities/PaintWindow'
-import { x, y, w, h } from '../constants'
+import { x, y, w, h, CURSOR_ORIGINS } from '../constants'
 import { Tacky } from '../entities/Tacky'
 import { Alert } from '../entities/Alert'
 import { Enemy } from '../entities/Enemy'
@@ -12,12 +12,19 @@ const SKIP_MENU = false
 let SKIP_DESKTOP = false
 const TIMESCALE = 1
 
+export const isInCanvas = (p: { x: number; y: number }) => {
+  if (p.x < x + 29 || p.x > x + h + 11) return false
+  if (p.y < y + 16 || p.y > h + y - 3) return false
+  return true
+}
+
 export class Game extends Scene {
   antivirus: AntiVirus
   paint: PaintWindow
   virusAlert: Alert
   aboutAlert: Alert
   tacky: Tacky
+  cursor: Phaser.GameObjects.Sprite
 
   constructor() {
     super('Game')
@@ -26,6 +33,11 @@ export class Game extends Scene {
   create() {
     this.cameras.main.setRoundPixels(false)
     this.sound.pauseOnBlur = false
+
+    this.cursor = this.add
+      .sprite(0, 0, 'icons', 6)
+      .setOrigin(0.2, 0.1)
+      .setDepth(999999)
 
     this.data.set('gameovered', false)
     this.data.set('wave', 0)
@@ -61,6 +73,9 @@ export class Game extends Scene {
     this.input.on('pointerdown', () =>
       this.sound.play('mouse-click', { rate: 1.5 + Phaser.Math.RND.frac() }),
     )
+
+    this.input.on('pointermove', this.setCursor.bind(this))
+    this.data.events.on('changedata-toolIndex', this.setCursor.bind(this))
 
     if (SKIP_MENU) {
       this.showDesktop()
@@ -106,6 +121,18 @@ export class Game extends Scene {
         },
       })
     }
+  }
+
+  setCursor() {
+    this.cursor.setPosition(
+      this.input.activePointer.x,
+      this.input.activePointer.y,
+    )
+
+    const inCanvas = isInCanvas(this.input.activePointer)
+    const frame = inCanvas ? this.data.get('toolIndex') : 6
+
+    this.cursor.setFrame(frame).setOrigin(...CURSOR_ORIGINS[frame])
   }
 
   async showDesktop() {
