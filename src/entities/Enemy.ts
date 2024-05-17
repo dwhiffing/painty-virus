@@ -2,6 +2,7 @@ import { getInBounds, ENEMY_TYPES, ENEMY_DEPTH } from '../constants'
 import { Game, TIMESCALE } from '../scenes/Game'
 import { Bullet } from './Bullet'
 
+let frame = 0
 export class Enemy extends Phaser.GameObjects.Sprite {
   moveTimer: number
   _angle: number
@@ -84,9 +85,12 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     if (this.health <= 0 && !this.dying) {
       this.dying = true
+      this.color = bullet.fillColor
       this.setTintFill(this.color)
       this.setAlpha(1)
       this.play('explode')
+      this.emitParticles()
+      this.emitStain()
 
       if (this.maxHealth === ENEMY_TYPES[3].health) {
         this.scene.sound.play('boss-dead', {
@@ -103,6 +107,42 @@ export class Enemy extends Phaser.GameObjects.Sprite {
         this.setActive(false).setVisible(false)
         this._scene.antivirus.checkNextWave()
       })
+    }
+  }
+
+  emitParticles() {
+    this._scene.antivirus.enemyParticles.setConfig({
+      speedX: { min: -70, max: 70 },
+      speedY: { min: -70, max: 70 },
+      scale: this.maxHealth > 10 ? 2 : 1,
+      alpha: { start: 1, end: 0 },
+      lifespan: { min: 200, max: 1200 },
+      tint: this.color,
+    })
+    this._scene.antivirus.enemyParticles.emitParticle(15, this.x, this.y)
+  }
+
+  emitStain() {
+    const stainSize = 1
+    const life = 15000
+    frame++
+
+    frame %= 4
+    if (stainSize > 0) {
+      const size = stainSize
+      this._scene.antivirus.enemyStains.setConfig({
+        speedX: 0,
+        speedY: 0,
+        scale: size,
+        frame: frame,
+        alpha: { start: 1, end: 0 },
+        lifespan: {
+          max: life * 1.1,
+          min: life * 0.9,
+        },
+        tint: this.color,
+      })
+      this._scene.antivirus.enemyStains.emitParticle(1, this.x, this.y)
     }
   }
 

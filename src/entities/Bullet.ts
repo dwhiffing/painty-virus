@@ -164,7 +164,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setPosition(this.x, this.y)
       .setDisplaySize(this.explodeRadius, this.explodeRadius)
       .setFillStyle(this.fillColor)
-      .setAlpha(this.isBucket ? 1 : 0.65)
+      .setAlpha(this.isBucket ? 1 : 0.5)
 
     this.image.setAlpha(0)
     this.image2.setAlpha(0)
@@ -229,7 +229,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.isMine = !!options.isMine
     this.isBucket = !!options.isBucket
     this.particleCount = options.particleCount ?? 0
-    this.particleLifespan = options.particleLifespan ?? 9000
+    this.particleLifespan = options.particleLifespan ?? 7000
     this.stainSize = options.stainSize ?? 0
     this.particleSpeed = options.particleSpeed ?? 10
     this.hitEnemies = []

@@ -24,6 +24,8 @@ export class AntiVirus {
   bullets: Phaser.GameObjects.Group
   particles: Phaser.GameObjects.Particles.ParticleEmitter
   stains: Phaser.GameObjects.Particles.ParticleEmitter
+  enemyParticles: Phaser.GameObjects.Particles.ParticleEmitter
+  enemyStains: Phaser.GameObjects.Particles.ParticleEmitter
   weapons: Weapon[]
   constructor(scene: Game) {
     this.scene = scene
@@ -46,6 +48,18 @@ export class AntiVirus {
 
     this.stains = this.scene.add
       .particles(0, 0, 'pixel')
+      .stop()
+      .setDepth(ENEMY_DEPTH - 2)
+      .setMask(this.mask)
+
+    this.enemyParticles = this.scene.add
+      .particles(0, 0, 'pixel')
+      .stop()
+      .setDepth(ENEMY_DEPTH - 2)
+      .setMask(this.mask)
+
+    this.enemyStains = this.scene.add
+      .particles(0, 0, 'splats')
       .stop()
       .setDepth(ENEMY_DEPTH - 2)
       .setMask(this.mask)

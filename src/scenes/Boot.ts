@@ -64,6 +64,10 @@ export class Boot extends Scene {
       frameHeight: 32,
       frameWidth: 32,
     })
+    this.load.spritesheet('splats', 'splats.png', {
+      frameHeight: 25,
+      frameWidth: 25,
+    })
     this.load.bitmapFont('clarity', 'clarity.png', 'clarity.xml')
   }
 
