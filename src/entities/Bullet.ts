@@ -1,5 +1,5 @@
 import { BULLET_DEPTH, INITIAL_WEAPONS, Weapon, h, w, x, y } from '../constants'
-import { Game } from '../scenes/Game'
+import { Game, TIMESCALE } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
 export class Bullet extends Phaser.GameObjects.Rectangle {
@@ -48,7 +48,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.explodeCircle = this.scene.add
       .circle(10, 10, 10, 0x000000)
       .setAlpha(0)
-      .setDepth(BULLET_DEPTH + 1)
+      .setDepth(BULLET_DEPTH)
       .setMask(this._scene.antivirus.mask)
   }
 
@@ -101,6 +101,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   kill() {
     this.setVisible(false).setActive(false)
     this._body.setVelocity(0)
+
     const enemies = this._scene.antivirus.enemies.getChildren() as Enemy[]
 
     if (this.explodeTween) this.explodeTween.destroy()

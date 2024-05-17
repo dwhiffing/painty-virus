@@ -375,7 +375,7 @@ export class AntiVirus {
         )
       }
       if (!b.visible) return
-      if (b.setupTime > 0 || b.damage === 0 || b.hitEnemies.includes(a)) return
+      if (b.setupTime > 0 || b.damage <= 0 || b.hitEnemies.includes(a)) return
       a.damage(b)
       b.hitEnemies.push(a)
       b.takeDamage(1)
