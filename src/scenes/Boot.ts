@@ -19,9 +19,9 @@ export class Boot extends Scene {
     this.load.image('icon', 'favicon.png')
     this.load.setPath('assets')
 
-    this.load.audio('startup', 'sfx/startup.wav')
+    this.load.audio('startup', 'sfx/startup.mp3')
     this.load.audio('alert', 'sfx/alert.wav')
-    this.load.audio('bsod', 'sfx/bsod.wav')
+    this.load.audio('bsod', 'sfx/bsod.mp3')
     this.load.audio('mouse-click', 'sfx/mouse-click.wav')
     this.load.audio('enemy-spawn', 'sfx/enemy-spawn.wav')
     this.load.audio('enemy-spawn2', 'sfx/enemy-spawn2.wav')
