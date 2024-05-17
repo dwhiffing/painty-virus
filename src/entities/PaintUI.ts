@@ -142,6 +142,7 @@ export class PaintUI {
     this.scene.events.on('changedata', (_: any, key: string, value: any) => {
       if (key === 'foregroundColor') {
         const index = PAINT_COLORS.indexOf(value)
+        rectangles[0].setFillStyle(PAINT_COLORS[index])
         rectangles2.forEach((r) => r.setFillStyle(0xffffff))
         rectangles2[index].setFillStyle(0xffffff)
         borderRectangles2.forEach((r) => r.setFillStyle(0xaaaaaa))
