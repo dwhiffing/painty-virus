@@ -84,7 +84,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
 
     if (this.health <= 0 && !this.dying) {
       this.dying = true
-      this.setTintFill(0x000000)
+      this.setTintFill(this.color)
       this.setAlpha(1)
       this.play('explode')
 
