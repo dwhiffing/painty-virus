@@ -51,20 +51,21 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setDepth(BULLET_DEPTH + 1)
       .setMask(this._scene.antivirus.mask)
   }
+
   update() {
     if (this.maxLifetime > -1) {
-      this.lifetime--
+      this.lifetime -= TIMESCALE
     }
     if (this.shootTime > -1) {
-      this.shootTime--
+      this.shootTime -= TIMESCALE
     }
 
     if (this.setupTime > 0) {
       this.setAlpha(0.5)
-      this.setupTime--
-    } else if (this.setupTime === 0) {
+      this.setupTime -= TIMESCALE
+    } else if (this.setupTime > -99) {
       if (this.isMine && this.active && this.visible) {
-        this.setupTime = -1
+        this.setupTime = -99
         this.scene.sound.play('talk', { rate: 0.5 })
         this.image.setTexture('mine')
         this.image2.setAlpha(0)

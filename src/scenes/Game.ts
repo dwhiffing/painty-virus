@@ -10,7 +10,7 @@ import { Enemy } from '../entities/Enemy'
 
 const SKIP_MENU = false
 let SKIP_DESKTOP = false
-const TIMESCALE = 1
+export const TIMESCALE = 1
 
 export const isInCanvas = (p: { x: number; y: number }) => {
   if (p.x < x + 29 || p.x > x + h + 11) return false

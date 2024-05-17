@@ -10,7 +10,7 @@ import {
   BULLET_DEPTH,
   PAINT_COLORS,
 } from '../constants'
-import { Game } from '../scenes/Game'
+import { Game, TIMESCALE } from '../scenes/Game'
 
 import { Bullet } from './Bullet'
 import { Enemy } from './Enemy'
@@ -205,12 +205,12 @@ export class AntiVirus {
       callback: () => {
         this.weapons.forEach((w) => {
           if (w.fireTiming > 0) {
-            w.fireTiming--
+            w.fireTiming -= TIMESCALE
           }
 
           if (w.ammo < w.maxAmmo) {
             if (w.reloadTiming > 1) {
-              w.reloadTiming--
+              w.reloadTiming -= TIMESCALE
             } else {
               w.ammo++
               w.reloadTiming = w.reloadRate
