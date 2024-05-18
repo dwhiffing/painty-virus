@@ -29,6 +29,7 @@ export class Alert {
       .fillStyle(14277081)
       .fillRect(x, y, w, h)
       .strokeRect(x, y, w, h)
+      .setAlpha(0)
 
     // title bar
     graphics
@@ -38,6 +39,7 @@ export class Alert {
     const titleText = this.scene.add
       .bitmapText(x + 3, y + 1, 'clarity', title, 8)
       .setDepth(depth + 2)
+      .setAlpha(0)
 
     this.contents.push(graphics, titleText)
 
@@ -52,21 +54,27 @@ export class Alert {
         )
         .setTint(0x000000)
         .setDepth(depth + 2)
+        .setAlpha(0)
 
       const icon = this.scene.add
         .image(x + w - 10, y + 30, 'goat')
         .setDepth(depth + 2)
         .setOrigin(1, 0)
+        .setAlpha(0)
+
       this.buttonText = this.scene.add
         .bitmapText(x + 90, y + 98, 'clarity', 'Ok', 8)
         .setTint(0x000000)
         .setDepth(depth + 2)
+        .setAlpha(0)
 
       this.button = this.scene.add
         .rectangle(x + 80, y + 98, 34, 12, 0xaaaaaa)
         .setDepth(depth + 1)
         .setOrigin(0)
         .setInteractive()
+        .setAlpha(0)
+
         .on('pointerdown', () => {
           this.hide()
         })
@@ -85,17 +93,21 @@ export class Alert {
         .setMaxWidth(w - 60)
         .setCenterAlign()
         .setDepth(depth + 2)
+        .setAlpha(0)
 
       this.buttonText = this.scene.add
         .bitmapText(x + 90, y + 60, 'clarity', 'Ok', 8)
         .setTint(0x000000)
         .setDepth(depth + 2)
+        .setAlpha(0)
 
       this.button = this.scene.add
         .rectangle(x + 80, y + 60, 34, 12, 0xaaaaaa)
         .setDepth(depth + 1)
         .setOrigin(0)
         .setInteractive()
+        .setAlpha(0)
+
         .on('pointerdown', () => {
           this.scene.events.emit('virusokclicked')
           this.hide()
@@ -105,6 +117,8 @@ export class Alert {
         .image(x + 5, y + 20, 'alert')
         .setDepth(depth + 1)
         .setOrigin(0, 0)
+        .setAlpha(0)
+
       this.contents.push(text, icon, this.button, this.buttonText)
     }
 
