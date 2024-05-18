@@ -1,5 +1,5 @@
 import { BULLET_DEPTH, Weapon, h, w, x, y } from '../constants'
-import { Game } from '../scenes/Game'
+import { Game, TIMESCALE } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
 export class Bullet extends Phaser.GameObjects.Rectangle {
@@ -21,6 +21,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   explodeRadius: number
   explodeDamage: number
   hitEnemies: Enemy[]
+  expireTimer?: Phaser.Time.TimerEvent
+  setupTimer?: Phaser.Time.TimerEvent
   explodeTween: Phaser.Tweens.BaseTween
   explodeCircle: Phaser.GameObjects.Arc
   setupTime: number
@@ -53,6 +55,14 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       .setAlpha(0)
       .setDepth(BULLET_DEPTH)
       .setMask(this._scene.antivirus.mask)
+
+    this.scene.time.addEvent({
+      delay: 10,
+      repeat: -1,
+      callback: () => {
+        if (this.shootTime > -1) this.shootTime--
+      },
+    })
   }
 
   update() {
@@ -163,6 +173,9 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
         rate: 0.8 + Phaser.Math.RND.frac() / 4,
       })
     }
+
+    if (this.isTower) this.scene.sound.play('talk', { rate: 0.1 })
+
     const closeEnough = enemies.filter((e) => {
       if (!e.active) return false
 
@@ -202,13 +215,16 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.particleSpeed = options.particleSpeed ?? 10
     this.hitEnemies = []
 
+    this.expireTimer?.remove(false)
+    this.setupTimer?.remove(false)
+
     if (options.lifetime !== -1) {
-      this.scene.time.delayedCall(options.lifetime * 15, () => {
-        this.kill()
-        if (this.isTower) {
-          this.scene.sound.play('talk', { rate: 0.1 })
-        }
-      })
+      this.expireTimer = this.scene.time.delayedCall(
+        options.lifetime * 15,
+        () => {
+          if (this.visible) this.kill()
+        },
+      )
     }
 
     if (!options.isFromTower)
@@ -226,15 +242,18 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
         this.image.setAlpha(1)
         this.image2.setAlpha(0)
 
-        this.scene.time.delayedCall(this.setupTime * 15, () => {
-          if (this.active && this.visible) {
-            this.setupTime = 0
-            this.scene.sound.play('talk', { rate: 0.5 })
-            this.image.setTexture('mine')
-            this.image2.setAlpha(0)
-          }
-          this.setAlpha(1)
-        })
+        this.setupTimer = this.scene.time.delayedCall(
+          this.setupTime * 15,
+          () => {
+            if (this.active && this.visible) {
+              this.setupTime = 0
+              this.scene.sound.play('talk', { rate: 0.5 })
+              this.image.setTexture('mine')
+              this.image2.setAlpha(0)
+            }
+            this.setAlpha(1)
+          },
+        )
       }
       if (this.isTower) {
         this.image.setTexture('spray')
@@ -255,7 +274,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
       typeof p === 'number'
         ? p
         : Phaser.Math.Angle.BetweenPoints(this.getCenter(), p)
-    this.body!.velocity.x = Math.cos(ang) * this.speed
-    this.body!.velocity.y = Math.sin(ang) * this.speed
+    this.body!.velocity.x = Math.cos(ang) * this.speed * TIMESCALE
+    this.body!.velocity.y = Math.sin(ang) * this.speed * TIMESCALE
   }
 }
