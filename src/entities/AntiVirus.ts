@@ -236,12 +236,12 @@ export class AntiVirus {
       callback: () => {
         this.weapons.forEach((w) => {
           if (w.fireTiming > 0) {
-            w.fireTiming -= TIMESCALE
+            w.fireTiming--
           }
 
           if (w.ammo < w.maxAmmo) {
             if (w.reloadTiming > 1) {
-              w.reloadTiming -= TIMESCALE
+              w.reloadTiming--
             } else {
               w.ammo++
               w.reloadTiming = w.reloadRate

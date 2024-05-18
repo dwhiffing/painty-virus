@@ -1,5 +1,5 @@
 import { getInBounds, ENEMY_TYPES, ENEMY_DEPTH } from '../constants'
-import { Game, TIMESCALE } from '../scenes/Game'
+import { Game } from '../scenes/Game'
 import { Bullet } from './Bullet'
 
 let frame = 0
@@ -28,7 +28,7 @@ export class Enemy extends Phaser.GameObjects.Sprite {
     this.scene.time.addEvent({
       callback: () => {
         if (this.dying || !this.active || this.stunned) return
-        this.moveTimer -= TIMESCALE
+        this.moveTimer--
 
         if (this.moveTimer <= 0) {
           this.moveTimer = 10 - this.speed
