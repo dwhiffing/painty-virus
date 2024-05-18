@@ -1,5 +1,5 @@
 import { BULLET_DEPTH, Weapon, h, w, x, y } from '../constants'
-import { Game, TIMESCALE } from '../scenes/Game'
+import { Game } from '../scenes/Game'
 import { Enemy } from './Enemy'
 
 export class Bullet extends Phaser.GameObjects.Rectangle {
@@ -7,7 +7,6 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   moveTimer: number
   damage: number
   health: number
-  lifetime: number
   speed: number
   isTower: boolean
   isMine: boolean
@@ -24,9 +23,7 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   hitEnemies: Enemy[]
   explodeTween: Phaser.Tweens.BaseTween
   explodeCircle: Phaser.GameObjects.Arc
-  maxLifetime: number
   setupTime: number
-  maxSetupTime: number
   image: Phaser.GameObjects.Sprite
   image2: Phaser.GameObjects.Sprite
   constructor(scene: Game, x: number, y: number) {
@@ -59,34 +56,8 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
   }
 
   update() {
-    if (this.maxLifetime > -1) {
-      this.lifetime -= TIMESCALE
-    }
-    if (this.shootTime > -1) {
-      this.shootTime -= TIMESCALE
-    }
-
     if (this.visible && this.isEraser) this.emitStain()
 
-    if (this.setupTime > 0) {
-      this.setAlpha(0.5)
-      this.setupTime -= TIMESCALE
-    } else if (this.setupTime > -99) {
-      if (this.isMine && this.active && this.visible) {
-        this.setupTime = -99
-        this.scene.sound.play('talk', { rate: 0.5 })
-        this.image.setTexture('mine')
-        this.image2.setAlpha(0)
-      }
-      this.setAlpha(1)
-    }
-
-    if (this.lifetime <= -2) {
-      this.kill()
-      if (this.isTower) {
-        this.scene.sound.play('talk', { rate: 0.1 })
-      }
-    }
     if (
       (this.x < x + 30 ||
         this.x > w + 20 ||
@@ -215,15 +186,12 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.damage = options.damage
     this.setSize(options.bulletSize, options.bulletSize)
     this.health = options.health
-    this.lifetime = options.lifetime
     this.speed = options.speed
     this.maxShootTime = options.shootTime ?? 0
     this.shootTime = options.shootTime ?? 0
     this.setupTime = options.setupTime
-    this.maxSetupTime = options.setupTime
     this.explodeRadius = options.explodeRadius
     this.explodeDamage = options.explodeDamage ?? 0
-    this.maxLifetime = options.lifetime
     this.isTower = !!options.isTower
     this.isEraser = !!options.isEraser
     this.isMine = !!options.isMine
@@ -233,6 +201,15 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
     this.stainSize = options.stainSize ?? 0
     this.particleSpeed = options.particleSpeed ?? 10
     this.hitEnemies = []
+
+    if (options.lifetime !== -1) {
+      this.scene.time.delayedCall(options.lifetime * 15, () => {
+        this.kill()
+        if (this.isTower) {
+          this.scene.sound.play('talk', { rate: 0.1 })
+        }
+      })
+    }
 
     if (!options.isFromTower)
       this.setFillStyle(this.scene.data.get('foregroundColor'))
@@ -248,6 +225,16 @@ export class Bullet extends Phaser.GameObjects.Rectangle {
         this.image.setTint(this.scene.data.get('foregroundColor'))
         this.image.setAlpha(1)
         this.image2.setAlpha(0)
+
+        this.scene.time.delayedCall(this.setupTime * 15, () => {
+          if (this.active && this.visible) {
+            this.setupTime = 0
+            this.scene.sound.play('talk', { rate: 0.5 })
+            this.image.setTexture('mine')
+            this.image2.setAlpha(0)
+          }
+          this.setAlpha(1)
+        })
       }
       if (this.isTower) {
         this.image.setTexture('spray')
