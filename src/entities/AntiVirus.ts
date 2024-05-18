@@ -364,13 +364,13 @@ export class AntiVirus {
   }
 
   update() {
+    if (this.scene.data.get('gameovered')) return
+
     if (
       this.scene.input.activePointer.isDown &&
       this.scene.data.get('toolIndex') === 0 &&
       getInBounds(this.scene.input.activePointer.position)
     ) {
-      if (this.scene.data.get('gameovered')) return
-
       this.shootActiveWeapon()
     }
     if (!this.enemies.children || !this.bullets.children) return
