@@ -9,6 +9,7 @@ import { Alert } from '../entities/Alert'
 import { Enemy } from '../entities/Enemy'
 
 const SKIP_MENU = false
+const MUTED = false
 let SKIP_DESKTOP = false
 export const TIMESCALE = 1
 
@@ -34,6 +35,8 @@ export class Game extends Scene {
     this.cameras.main.setRoundPixels(false)
     this.sound.pauseOnBlur = false
 
+    this.sound.setMute(MUTED)
+
     this.cursor = this.add
       .sprite(0, 0, 'icons', 6)
       .setOrigin(0.2, 0.1)
@@ -45,8 +48,13 @@ export class Game extends Scene {
     this.data.set('lives', 3)
 
     this.input.keyboard?.on('keydown', (e: any) => {
-      if (typeof +e.key === 'number' && +e.key < 7)
+      if (typeof +e.key === 'number' && +e.key < 7) {
         this.data.set('toolIndex', +e.key - 1)
+      }
+
+      if (e.key === 'm') {
+        this.sound.setMute(!this.sound.mute)
+      }
     })
     this.createAnimations()
 
