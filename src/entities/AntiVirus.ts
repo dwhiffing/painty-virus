@@ -11,7 +11,7 @@ import {
   PAINT_COLORS,
   ENEMY_DEPTH,
 } from '../constants'
-import { Game, TIMESCALE } from '../scenes/Game'
+import { Game } from '../scenes/Game'
 
 import { Bullet } from './Bullet'
 import { Enemy } from './Enemy'
