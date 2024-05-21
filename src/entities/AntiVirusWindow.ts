@@ -17,7 +17,7 @@ import { Bullet } from './Bullet'
 import { Enemy } from './Enemy'
 import { PaintUI } from './PaintUI'
 
-export class AntiVirus {
+export class AntiVirusWindow {
   scene: Game
   enemies: Phaser.GameObjects.Group
   mask: Phaser.Display.Masks.GeometryMask

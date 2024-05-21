@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 import { Icon } from '../entities/Icon'
-import { AntiVirus } from '../entities/AntiVirus'
+import { AntiVirusWindow } from '../entities/AntiVirusWindow'
 
 import { PaintWindow } from '../entities/PaintWindow'
 import { x, y, w, h, CURSOR_ORIGINS, CURSOR_DEPTH } from '../constants'
@@ -20,7 +20,7 @@ export const isInCanvas = (p: { x: number; y: number }) => {
 }
 
 export class Game extends Scene {
-  antivirus: AntiVirus
+  antivirus: AntiVirusWindow
   paint: PaintWindow
   virusAlert: Alert
   aboutAlert: Alert
@@ -104,9 +104,7 @@ export class Game extends Scene {
               clickToStart.setAlpha(Math.round(b.value) + 0.3),
           })
 
-          await new Promise((resolve) => {
-            this.input.on('pointerdown', resolve)
-          })
+          await new Promise((resolve) => this.input.on('pointerdown', resolve))
 
           blink.destroy()
           clickToStart.setAlpha(1)
@@ -165,7 +163,7 @@ export class Game extends Scene {
     if (!SKIP_DESKTOP) {
       this.sound.play('startup', { volume: 0.6, rate: 1 })
 
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+      await this.sleep(1000)
     }
 
     new Icon(this, 5, 55, 'painty', 'painty', () => {
@@ -177,13 +175,11 @@ export class Game extends Scene {
       }
     })
 
-    if (!SKIP_DESKTOP)
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    if (!SKIP_DESKTOP) await this.sleep(1000)
 
     this.tacky = new Tacky(this)
 
-    if (!SKIP_DESKTOP)
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+    if (!SKIP_DESKTOP) await this.sleep(1000)
 
     this.runIntro()
   }
@@ -193,24 +189,24 @@ export class Game extends Scene {
     if (!SKIP_DESKTOP) {
       await this.tacky.say('My name is Tacky.')
       this.data.set('showfullintro', true)
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+
+      await this.sleep(1000)
+
       await this.tacky.say(
         "To get to know each other, why don't you Open painty and draw me a picture?",
       )
 
       if (!this.paint) {
-        await new Promise((resolve) => {
-          this.events.once('paintopened', resolve)
-        })
+        await new Promise((resolve) => this.events.once('paintopened', resolve))
       }
 
-      await new Promise((resolve) => this.time.delayedCall(5000, resolve))
+      await this.sleep(5000)
 
       await this.tacky.say(
         'Make sure you try all the different colors and tools!',
       )
 
-      await new Promise((resolve) => this.time.delayedCall(10000, resolve))
+      await this.sleep(10000)
 
       await this.tacky.say(
         this.data.get('drewapicture')
@@ -218,24 +214,24 @@ export class Game extends Scene {
           : "It looks like you haven't started your painting yet.  Would you like some help with that?",
       )
 
-      await new Promise((resolve) => this.time.delayedCall(10000, resolve))
+      await this.sleep(10000)
 
       this.data.set('forcecursor', true)
       this.setCursor()
       this.sound.play('alert')
       this.virusAlert.show()
 
-      await new Promise((resolve) => this.time.delayedCall(2000, resolve))
+      await this.sleep(2000)
 
       await this.tacky.say('Oh, looks like painty detected some viruses')
 
-      await new Promise((resolve) => this.time.delayedCall(500, resolve))
+      await this.sleep(500)
 
       await this.tacky.say(
         'Are you surprised? This is blundersoft painty-virus!',
       )
       await this.tacky.say("It's supposed to do that!")
-      await new Promise((resolve) => this.time.delayedCall(500, resolve))
+      await this.sleep(500)
 
       await this.tacky.say(
         'Use the different paint tools to eliminate the viruses.',
@@ -246,10 +242,10 @@ export class Game extends Scene {
 
       this.events.emit('virusalertshowbutton')
 
-      await new Promise((resolve) => {
-        this.events.once('virusokclicked', resolve)
-      })
-      await new Promise((resolve) => this.time.delayedCall(1000, resolve))
+      await new Promise((resolve) =>
+        this.events.once('virusokclicked', resolve),
+      )
+      await this.sleep(1000)
       this.data.set('forcecursor', false)
       this.setCursor()
     }
@@ -259,7 +255,7 @@ export class Game extends Scene {
     }
 
     this.paint.clear()
-    this.antivirus = new AntiVirus(this)
+    this.antivirus = new AntiVirusWindow(this)
   }
 
   createAnimations() {
@@ -315,7 +311,7 @@ export class Game extends Scene {
       this.gameover()
     } else {
       this.sound.play('lose-life', { rate: 1.3, volume: 0.6 })
-      await new Promise((resolve) => this.time.delayedCall(300, resolve))
+      await this.sleep(300)
       await this.tacky.say(`whoops!`, 1000)
       await this.tacky.say(
         `${lives} ${lives === 1 ? 'life' : 'lives'} left`,
@@ -344,7 +340,7 @@ export class Game extends Scene {
     })
     this.tweens.add({ targets: black, alpha: 1 })
 
-    await new Promise((resolve) => this.time.delayedCall(3000, resolve))
+    await this.sleep(3000)
     black.setAlpha(0)
 
     this.setCursor()
@@ -371,6 +367,17 @@ export class Game extends Scene {
     this.input.once('pointerdown', () => {
       window.location.reload()
       // this.scene.restart()
+    })
+  }
+
+  sleep(amount: number) {
+    return new Promise((resolve) => {
+      const event = this.time.delayedCall(amount, resolve)
+
+      this.tacky?.once('pointerdown', () => {
+        event.destroy()
+        resolve(null)
+      })
     })
   }
 

@@ -4,6 +4,9 @@ import { Game } from '../scenes/Game'
 export class Tacky extends Phaser.GameObjects.Sprite {
   text: Phaser.GameObjects.BitmapText
   textBox: Phaser.GameObjects.Rectangle
+  speechTickEvent: Phaser.Time.TimerEvent
+  speechEndEvent: Phaser.Time.TimerEvent
+  currentSpeech: string
 
   constructor(scene: Game) {
     super(scene, 320 - 16, 200 - 23, 'tacky')
@@ -16,6 +19,7 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       .setDepth(TACKY_DEPTH + 1)
 
     this.scene.add.existing(this)
+    this.setInteractive()
 
     this.setDepth(TACKY_DEPTH + 2)
 
@@ -25,28 +29,29 @@ export class Tacky extends Phaser.GameObjects.Sprite {
       .setOrigin(1, 1)
       .setDepth(TACKY_DEPTH)
       .setVisible(false)
+      .setInteractive()
   }
 
   say(text: string, _timeout?: number): Promise<void> {
-    if (this.text.text !== '') return Promise.resolve()
-    this.textBox.setVisible(true)
+    this.currentSpeech = text
     this.play('tacky')
-    this.text.text = ' '
-    this.textBox.setSize(87, this.text.height + 6)
+    this.setText(' ')
+
+    this.off('pointerdown')
+    this.textBox.off('pointerdown')
+    this.speechTickEvent?.destroy()
+    this.speechEndEvent?.destroy()
 
     let i = 0
-    const event = this.scene.time.addEvent({
+    this.speechTickEvent = this.scene.time.addEvent({
       delay: 80,
       repeat: text.length / 2,
       callback: () => {
         i += 2
-        this.text.text = text.slice(0, i)
-        this.textBox.setSize(87, this.text.height + 6)
+        this.setText(text.slice(0, i))
         this.scene.sound.play('talk', { rate: 2, volume: 0.2 })
         if (i >= text.length) {
-          this.scene.time.delayedCall(500, () => {
-            this.play('tacky-idle')
-          })
+          this.scene.time.delayedCall(500, () => this.play('tacky-idle'))
         }
       },
     })
@@ -54,12 +59,29 @@ export class Tacky extends Phaser.GameObjects.Sprite {
     let timeout = _timeout ?? 1500 + text.length * 60
 
     return new Promise((resolve) => {
-      this.scene.time.delayedCall(timeout, () => {
-        event.destroy()
-        this.textBox.setVisible(false)
-        this.text.text = ''
-        resolve()
-      })
+      const fn = () => {
+        if (this.text.text === this.currentSpeech) resolve()
+        this.skip()
+      }
+      this.textBox.on('pointerdown', fn)
+      this.on('pointerdown', fn)
+      this.speechEndEvent = this.scene.time.delayedCall(timeout, fn)
     })
+  }
+
+  skip = () => {
+    this.speechTickEvent.destroy()
+    this.play('tacky-idle')
+    if (this.text.text === this.currentSpeech || this.text.text === '') {
+      this.speechEndEvent.destroy()
+      return this.setText('')
+    }
+    this.setText(this.currentSpeech)
+  }
+
+  setText = (text: string) => {
+    this.text.text = text
+    this.textBox.setSize(87, this.text.height + 6)
+    this.textBox.setVisible(text !== '')
   }
 }
